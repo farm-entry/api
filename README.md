@@ -10,6 +10,8 @@ typescript-api-with-mongodb
 │   ├── app.ts               # Entry point of the application
 │   ├── controllers          # Contains controllers for handling requests
 │   │   └── index.ts
+│   ├── models               # Contains mongoDB models
+│   │   └── index.ts
 │   └── config               # Contains configuration files
 │       └── mongodb.ts
 ├── package.json             # NPM package configuration
