@@ -1,4 +1,5 @@
-import { Schema, Document, model } from "mongoose";
+import mongoose, { Document } from "mongoose";
+const { Schema, model } = mongoose;
 
 export interface UserSettingsDocument extends Document {
   subdomain: string;

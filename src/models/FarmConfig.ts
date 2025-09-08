@@ -1,4 +1,5 @@
-import { Schema, model, Document } from "mongoose";
+import mongoose, { Document } from "mongoose";
+const { Schema, model } = mongoose;
 
 export interface FarmConfigDocument extends Document {
   subdomain: string;
