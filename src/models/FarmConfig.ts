@@ -6,6 +6,9 @@ export interface FarmConfigDocument extends Document {
   url: string;
   user: string;
   accessKey: string;
+  menuOptions: {
+    [key: string]: string | boolean | number | null | undefined;
+  }
 }
 
 const FarmConfigSchema = new Schema(
@@ -26,6 +29,11 @@ const FarmConfigSchema = new Schema(
     accessKey: {
       type: String,
       required: true
+    },
+    menuOptions: {
+      type: Map,
+      of: Schema.Types.Mixed,
+      default: {}
     }
   },
   {

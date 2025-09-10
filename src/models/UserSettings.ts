@@ -4,6 +4,9 @@ const { Schema, model } = mongoose;
 export interface UserSettingsDocument extends Document {
   subdomain: string;
   username: string;
+  menuOptions: {
+    [key: string]: string | boolean | number | null | undefined;
+  }
 }
 const UserSettingsSchema = new Schema({
   subdomain: {
@@ -14,6 +17,11 @@ const UserSettingsSchema = new Schema({
     type: String,
     required: true,
   },
+  menuOptions: {
+    type: Map,
+    of: Schema.Types.Mixed,
+    default: {}
+  }
 });
 
 //UserSettingsSchema.index({ subdomain: 1, username: 1 }, { unique: true });

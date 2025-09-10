@@ -1,5 +1,5 @@
 import express from "express";
-import userRouter from "./routes/userRoutes.js";
+import routes from "./routes/index.js";
 
 const app = express();
 
@@ -9,6 +9,7 @@ app.get("/ping", (req, res) => {
   res.send("pong");
 });
 
-app.use("/user", userRouter);
+// Use the main router which includes all route modules
+app.use("/api", routes);
 
 export default app;

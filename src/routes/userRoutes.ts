@@ -1,9 +1,11 @@
-import { Router, Request, Response, NextFunction } from "express";
+import { Router } from "express";
+import { getUser, getNavUsers, createUser } from "../controllers/UserController.js";
 
 const userRouter: Router = Router();
 
-userRouter.get("/", (req: Request, res: Response, next: NextFunction) => {
-  res.send("User route");
-});
+userRouter.get("/", getNavUsers);
+userRouter.get("/:name", getUser);
+userRouter.post("/", createUser);
+//userRouter.post("/login", (req, res) => login(req, res));
 
 export default userRouter;
