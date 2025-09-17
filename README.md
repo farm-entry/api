@@ -109,32 +109,6 @@ curl http://localhost:3000/api/user/
 curl http://localhost:3000/api/user/john.doe
 ```
 
-### Create User
-```bash
-curl -X POST http://localhost:3000/api/user/ \
-  -H "Content-Type: application/json" \
-  -d '{"username": "john.doe"}'
-```
-
-## Features
-
-- **NAV Integration:** Connects to Microsoft Dynamics NAV OData endpoints
-- **MongoDB Storage:** Local data persistence with Mongoose ODM
-- **TypeScript:** Full type safety and modern JavaScript features
-- **Express.js:** RESTful API with proper routing structure
-- **Environment Configuration:** Flexible configuration via environment variables
-- **Logging:** Structured logging with custom logger
-- **Error Handling:** Comprehensive error handling and validation
-
-## Development
-
-The project uses:
-- **TypeScript** for type safety
-- **Express.js** for web framework
-- **Mongoose** for MongoDB ODM
-- **dotenv** for environment configuration
-- **ts-node** for development execution
-
 ## License
 
 This project is licensed under the MIT License.
