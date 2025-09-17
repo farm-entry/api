@@ -1,7 +1,6 @@
 {
   "name": "farmapp-api",
   "version": "1.0.0",
-  "type": "module",
   "description": "A TypeScript API with MongoDB connectivity",
   "main": "dist/server.js",
   "scripts": {
