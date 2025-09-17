@@ -6,6 +6,6 @@ const userRouter: Router = Router();
 userRouter.get("/", getNavUsers);
 userRouter.get("/:name", getUser);
 userRouter.post("/", createUser);
-userRouter.post("/login", (req, res) => getNavUserByName(req, res));
+userRouter.post("/login", getNavUserByName);
 
 export default userRouter;
