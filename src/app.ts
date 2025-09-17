@@ -3,6 +3,8 @@ import routes from "./routes/index.js";
 
 const app = express();
 
+app.use(express.json());
+
 app.get("/ping", (req, res) => {
   res.send({
     message: "pong",
