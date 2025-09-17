@@ -9,7 +9,6 @@ app.get("/ping", (req, res) => {
   res.send("pong");
 });
 
-// Use the main router which includes all route modules
 app.use("/api", routes);
 
 export default app;
