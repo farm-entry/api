@@ -12,13 +12,13 @@ async function startServer() {
       logger.info(`Server running on port ${PORT} in ${NODE_ENV} mode`);
     });
 
-    // process.on('unhandledRejection', (err: Error) => {
-    //   logger.error('Unhandled Promise Rejection:', err);
-    // });
+    process.on('unhandledRejection', (err: Error) => {
+      logger.error('Unhandled Promise Rejection:', err);
+    });
 
-    // process.on('uncaughtException', (err: Error) => {
-    //   logger.error('Uncaught Exception:', err);
-    // });
+    process.on('uncaughtException', (err: Error) => {
+      logger.error('Uncaught Exception:', err);
+    });
 
   } catch (error) {
     logger.error('Failed to start server:', error);
