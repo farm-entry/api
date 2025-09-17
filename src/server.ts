@@ -50,22 +50,11 @@ import express from "express";
 const app = express();
 
 app.get("/ping", (req, res) => {
-  res.send({
-    message: "pong",
-    timestamp: new Date().toISOString(),
-    env: process.env.NODE_ENV,
-    port: process.env.PORT
-  });
+  res.send('pong');
 });
 
 app.get("/", (req, res) => {
-  res.send({
-    status: "healthy",
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime(),
-    memory: process.memoryUsage(),
-    env: process.env.NODE_ENV
-  });
+  res.send('healthy');
 });
 
 const PORT = process.env.PORT || 3000;
