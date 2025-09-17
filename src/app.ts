@@ -6,7 +6,22 @@ const app = express();
 app.use(express.json());
 
 app.get("/ping", (req, res) => {
-  res.send("pong");
+  res.json({
+    message: "pong",
+    timestamp: new Date().toISOString(),
+    env: process.env.NODE_ENV,
+    port: process.env.PORT
+  });
+});
+
+app.get("/health", (req, res) => {
+  res.json({
+    status: "healthy",
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    memory: process.memoryUsage(),
+    env: process.env.NODE_ENV
+  });
 });
 
 app.use("/api", routes);
