@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "description": "A TypeScript API with MongoDB connectivity",
-  "main": "src/app.ts",
+  "main": "dist/server.js",
   "scripts": {
     "start": "node dist/server.js",
     "dev": "cross-env NODE_OPTIONS=\"--loader ts-node/esm\" nodemon src/server.ts",
