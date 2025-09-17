@@ -3,10 +3,10 @@ import routes from "./routes/index.js";
 
 const app = express();
 
-app.use(express.json());
+// app.use(express.json());
 
 app.get("/ping", (req, res) => {
-  res.json({
+  res.send({
     message: "pong",
     timestamp: new Date().toISOString(),
     env: process.env.NODE_ENV,
@@ -14,8 +14,8 @@ app.get("/ping", (req, res) => {
   });
 });
 
-app.get("/health", (req, res) => {
-  res.json({
+app.get("/", (req, res) => {
+  res.send({
     status: "healthy",
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
