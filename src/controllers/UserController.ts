@@ -1,18 +1,6 @@
 import { Request, Response } from 'express';
 import UserSettingsModel from '../models/UserSettings.js';
-import dotenv from 'dotenv';
-
-dotenv.config();
-
-const username = process.env.NAV_USER;
-const password = process.env.NAV_ACCESS_KEY;
-const baseUrl = process.env.NAV_BASE_URL;
-const credentials = Buffer.from(`${username}:${password}`).toString("base64");
-const headers = {
-  "Authorization": `Basic ${credentials}`,
-  "Accept": "application/json",
-  "Content-Type": "application/json",
-};
+import { navGet, navPost, createNavConfig, NavODataOptions } from '../services/NavConfig.js';
 
 export const getUser = async (req: Request, res: Response) => {
   try {
@@ -32,11 +20,15 @@ export const getUser = async (req: Request, res: Response) => {
 
 export const getNavUsers = async (req: Request, res: Response) => {
   try {
-    console.log(baseUrl);
-    const response = await fetch(`${baseUrl}/Users`, {
-      headers: headers
-    });
-    const users = await response.json();
+    const navConfig = createNavConfig();
+
+    // You can now easily add OData query options
+    const options: NavODataOptions = {
+      select: 'User_Name,Full_Name,E_Mail', // Only get specific fields
+      top: 100 // Limit results
+    };
+
+    const users = await navGet(navConfig, 'Users', options);
     res.status(200).json(users);
   } catch (error) {
     console.error("Error fetching users:", error);
@@ -57,29 +49,28 @@ export const createUser = async (req: Request, res: Response) => {
   }
 };
 
-// TODO: MW
-// export const login = async (req: Request, res: Response) => {
-//   try {
-//     const { user, password } = req.body;
-//     const response = await fetch(`${baseUrl}/User?$filter=User_Name eq '${user}'`, {
-//       headers: {
-//         "Authorization": `Basic ${Buffer.from(
-//           `${username}:${password}`
-//         ).toString("base64")}`
-//       }
-//     });
-//     const users = await response.json();
-//     res.status(200).json(users);
-//   } catch (error) {
-//     console.error("Error fetching users:", error);
-//     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-//     res.status(500).json({ message: "Error fetching users", error: errorMessage });
-//   }
-// };
+// Example of using the new service for filtered requests
+export const getNavUserByName = async (req: Request, res: Response) => {
+  try {
+    const navConfig = createNavConfig();
+    const userName = req.params.name;
+    const options: NavODataOptions = {
+      filter: `User_Name eq '${userName}'`
+    };
+
+    const users = await navGet(navConfig, 'Users', options);
+    res.status(200).json(users);
+  } catch (error) {
+    console.error("Error fetching user from Nav:", error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    res.status(500).json({ message: "Error fetching user from Nav", error: errorMessage });
+  }
+};
 
 const userController = {
   getUser,
   getNavUsers,
+  getNavUserByName,
   createUser
 };
 
