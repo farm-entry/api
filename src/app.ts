@@ -5,15 +5,6 @@ const app = express();
 
 app.use(express.json());
 
-app.get("/ping", (req, res) => {
-  res.send({
-    message: "pong",
-    timestamp: new Date().toISOString(),
-    env: process.env.NODE_ENV,
-    port: process.env.PORT
-  });
-});
-
 app.get("/", (req, res) => {
   res.send({
     status: "healthy",

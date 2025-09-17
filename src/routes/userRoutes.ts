@@ -1,11 +1,11 @@
-// import { Router } from "express";
-// import { getUser, getNavUsers, createUser } from "../controllers/UserController.js";
+import { Router } from "express";
+import { getUser, getNavUsers, createUser, getNavUserByName } from "../controllers/UserController.js";
 
-// const userRouter: Router = Router();
+const userRouter: Router = Router();
 
-// userRouter.get("/", getNavUsers);
-// userRouter.get("/:name", getUser);
-// userRouter.post("/", createUser);
-// //userRouter.post("/login", (req, res) => login(req, res));
+userRouter.get("/", getNavUsers);
+userRouter.get("/:name", getUser);
+userRouter.post("/", createUser);
+userRouter.post("/login", (req, res) => getNavUserByName(req, res));
 
-// export default userRouter;
+export default userRouter;
