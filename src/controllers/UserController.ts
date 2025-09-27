@@ -49,7 +49,6 @@ export const createUser = async (req: Request, res: Response) => {
   }
 };
 
-// Example of using the new service for filtered requests
 export const getNavUserByName = async (req: Request, res: Response) => {
   try {
     const navConfig = createNavConfig();

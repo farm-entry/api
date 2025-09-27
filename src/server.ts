@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import app from './app.js';
 import { connectDatabase } from './config/mongo.js';
 import { logger } from './config/logger.js';
