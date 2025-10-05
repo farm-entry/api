@@ -1,8 +1,4 @@
-export interface NavConfig {
-  baseUrl: string;
-  username: string;
-  password: string;
-}
+import { NavConfig } from "../types/types.js";
 
 export interface NavODataOptions {
   filter?: string;
@@ -45,25 +41,27 @@ const buildUrl = (baseUrl: string, endpoint: string, options?: NavODataOptions):
 };
 
 export async function navGet<T>(
-  config: NavConfig,
+  //navConfig: NavConfig,
   endpoint: string,
   options?: NavODataOptions
 ): Promise<T> {
   try {
-    const url = buildUrl(config.baseUrl, endpoint, options);
-    console.log('baseUrl =', config.baseUrl);
-    console.log('url =', url);
-
+    const baseUrl = process.env.NAV_BASE_URL;
+    const username = process.env.NAV_USERNAME;
+    const password = process.env.NAV_PASSWORD;
+    if (!baseUrl || !username || !password) {
+      throw new Error('NAV environment variables NAV_BASE_URL, NAV_USERNAME, or NAV_PASSWORD are missing.');
+    }
+    const url = buildUrl(baseUrl, endpoint, options);
     const response = await fetch(url, {
       method: 'GET',
-      headers: createHeaders(config.username, config.password)
+      headers: createHeaders(username, password)
     });
 
     if (!response.ok) {
       const errorText = await response.text();
       throw new Error(`Nav OData error! status: ${response.status}, message: ${errorText}`);
     }
-
     return await response.json();
   } catch (error) {
     console.error('Error fetching from Nav OData:', error);
@@ -75,8 +73,33 @@ export async function navPost<T>(
   config: NavConfig,
   endpoint: string,
   data: any
+): Promise<T>;
+export async function navPost<T>(
+  req: any,
+  endpoint: string,
+  data: any
+): Promise<T>;
+export async function navPost<T>(
+  configOrReq: NavConfig | any,
+  endpoint: string,
+  data: any
 ): Promise<T> {
   try {
+    // Check if first parameter is a request object or config object
+    let config: NavConfig;
+    if (configOrReq.session && configOrReq.session.navConfig) {
+      // It's a request object
+      config = configOrReq.session.navConfig;
+      if (!config) {
+        throw new Error('NAV configuration not found in session. Please log in again.');
+      }
+    } else if (configOrReq.baseUrl && configOrReq.username && configOrReq.password) {
+      // It's a config object
+      config = configOrReq;
+    } else {
+      throw new Error('Invalid parameter: expected NavConfig or Request with session');
+    }
+
     const url = `${config.baseUrl}/${endpoint}`;
 
     const response = await fetch(url, {

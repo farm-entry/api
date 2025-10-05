@@ -1,7 +1,7 @@
 import "express-session";
+import { NavConfig } from "../../datasources/NavConfig.ts";
 
 declare module "express-session" {
-    //TODO - expand user properties
     interface SessionData {
         user?: {
             id?: string;
@@ -9,5 +9,6 @@ declare module "express-session" {
             name?: string;
             loginTime?: Date;
         };
+        navConfig?: NavConfig;
     }
 }
