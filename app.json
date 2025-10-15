@@ -1,0 +1,58 @@
+{
+    "name": "farm-entry-api",
+    "description": "A TypeScript Node.js API that connects to Microsoft Dynamics NAV OData services",
+    "repository": "https://github.com/farm-entry/api",
+    "logo": "",
+    "keywords": [
+        "node",
+        "typescript",
+        "api",
+        "nav",
+        "odata",
+        "mongodb"
+    ],
+    "image": "heroku/nodejs",
+    "buildpacks": [
+        {
+            "url": "heroku/nodejs"
+        }
+    ],
+    "env": {
+        "NODE_ENV": {
+            "description": "Environment mode",
+            "value": "production"
+        },
+        "MONGO_URL": {
+            "description": "MongoDB connection string (use MongoDB Atlas for production)",
+            "required": true
+        },
+        "NAV_BASE_URL": {
+            "description": "NAV OData base URL",
+            "required": true
+        },
+        "NAV_USER": {
+            "description": "NAV username for authentication",
+            "required": true
+        },
+        "NAV_ACCESS_KEY": {
+            "description": "NAV access key for authentication",
+            "required": true
+        },
+        "SESSION_SECRET": {
+            "description": "Secret key for session encryption",
+            "generator": "secret"
+        }
+    },
+    "formation": {
+        "web": {
+            "quantity": 1,
+            "size": "basic"
+        }
+    },
+    "addons": [
+        {
+            "plan": "mongolab:sandbox",
+            "as": "MONGO"
+        }
+    ]
+}
