@@ -1,0 +1,439 @@
+openapi: 3.0.3
+info:
+  title: Farm Entry API
+  description: |
+    Farm Entry API provides user management and authentication services for the Farm Entry application.
+    It integrates with Microsoft Dynamics NAV for user authentication and data management.
+  version: 1.0.0
+  contact:
+    name: Farm Entry Team
+    email: support@farmentry.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:3000
+    description: Development server
+  - url: https://api.farmentry.com
+    description: Production server
+
+tags:
+  - name: Health
+    description: Health check endpoints
+  - name: Authentication
+    description: User authentication and session management
+  - name: Users
+    description: User management operations
+
+paths:
+  /health:
+    get:
+      tags:
+        - Health
+      summary: Health Check
+      description: Returns the health status of the API server
+      operationId: getHealth
+      responses:
+        '200':
+          description: Server is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+              example:
+                status: "healthy"
+                timestamp: "2025-10-14T10:00:00.000Z"
+                uptime: 3600
+                memory:
+                  rss: 50331648
+                  heapTotal: 20971520
+                  heapUsed: 18874368
+                  external: 1441792
+                env: "development"
+
+  /auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: User Login
+      description: Authenticate user against NAV system and create session
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+            example:
+              username: "john.doe"
+              password: "password123"
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+              example:
+                message: "Login successful"
+                user:
+                  id: "12345"
+                  username: "john.doe"
+                  name: "John Doe"
+                  loginTime: "2025-10-14T10:00:00.000Z"
+        '400':
+          description: Invalid credentials format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: "Invalid credentials"
+                message: "Username and password required"
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: "Authentication failed"
+                message: "Invalid credentials"
+
+  /auth/logout:
+    post:
+      tags:
+        - Authentication
+      summary: User Logout
+      description: Destroy user session and log out
+      operationId: logout
+      responses:
+        '200':
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              example:
+                message: "Logout successful"
+        '500':
+          description: Could not log out
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: "Could not log out"
+
+  /auth/session:
+    get:
+      tags:
+        - Authentication
+      summary: Check Session Status
+      description: Get current session information and authentication status
+      operationId: getSession
+      responses:
+        '200':
+          description: Session information
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/AuthenticatedSessionResponse'
+                  - $ref: '#/components/schemas/UnauthenticatedSessionResponse'
+              examples:
+                authenticated:
+                  summary: Authenticated user
+                  value:
+                    authenticated: true
+                    user:
+                      id: "12345"
+                      username: "john.doe"
+                      name: "John Doe"
+                      loginTime: "2025-10-14T10:00:00.000Z"
+                    sessionID: "sess_abc123"
+                unauthenticated:
+                  summary: No active session
+                  value:
+                    authenticated: false
+                    message: "No active session"
+
+  /api/user:
+    get:
+      tags:
+        - Users
+      summary: Get All Users
+      description: Retrieve all users from the NAV system
+      operationId: getAllUsers
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NavUser'
+              example:
+                - User_Name: "john.doe"
+                  Full_Name: "John Doe"
+                  License_Type: "Full User"
+                  User_Security_ID: "S-1-5-21-123456789"
+                - User_Name: "jane.smith"
+                  Full_Name: "Jane Smith"
+                  License_Type: "Limited User"
+                  User_Security_ID: "S-1-5-21-987654321"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          description: Error fetching users
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    post:
+      tags:
+        - Users
+      summary: Create User
+      description: Create a new user in the system
+      operationId: createUser
+      security:
+        - sessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+            example:
+              username: "new.user"
+              fullName: "New User"
+              licenseType: "Full User"
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NavUser'
+        '400':
+          description: Invalid user data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /api/user/{name}:
+    get:
+      tags:
+        - Users
+      summary: Get User by Name
+      description: Retrieve a specific user by username from the NAV system
+      operationId: getUserByName
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: name
+          in: path
+          required: true
+          description: Username to retrieve
+          schema:
+            type: string
+          example: "john.doe"
+      responses:
+        '200':
+          description: User found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NavUser'
+              example:
+                User_Name: "john.doe"
+                Full_Name: "John Doe"
+                License_Type: "Full User"
+                User_Security_ID: "S-1-5-21-123456789"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: "User not found"
+                message: "No user found with the provided username"
+
+components:
+  schemas:
+    HealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: "healthy"
+        timestamp:
+          type: string
+          format: date-time
+          example: "2025-10-14T10:00:00.000Z"
+        uptime:
+          type: number
+          description: Server uptime in seconds
+          example: 3600
+        memory:
+          type: object
+          properties:
+            rss:
+              type: number
+            heapTotal:
+              type: number
+            heapUsed:
+              type: number
+            external:
+              type: number
+        env:
+          type: string
+          example: "development"
+
+    LoginRequest:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          description: NAV username
+          example: "john.doe"
+        password:
+          type: string
+          format: password
+          description: NAV password
+          example: "password123"
+
+    LoginResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Login successful"
+        user:
+          $ref: '#/components/schemas/SessionUser'
+
+    SessionUser:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "12345"
+        username:
+          type: string
+          example: "john.doe"
+        name:
+          type: string
+          example: "John Doe"
+        loginTime:
+          type: string
+          format: date-time
+          example: "2025-10-14T10:00:00.000Z"
+
+    AuthenticatedSessionResponse:
+      type: object
+      properties:
+        authenticated:
+          type: boolean
+          example: true
+        user:
+          $ref: '#/components/schemas/SessionUser'
+        sessionID:
+          type: string
+          example: "sess_abc123"
+
+    UnauthenticatedSessionResponse:
+      type: object
+      properties:
+        authenticated:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: "No active session"
+
+    NavUser:
+      type: object
+      properties:
+        User_Name:
+          type: string
+          description: NAV username
+          example: "john.doe"
+        Full_Name:
+          type: string
+          description: Full display name
+          example: "John Doe"
+        License_Type:
+          type: string
+          description: NAV license type
+          example: "Full User"
+        User_Security_ID:
+          type: string
+          description: Windows security identifier
+          example: "S-1-5-21-123456789"
+
+    CreateUserRequest:
+      type: object
+      required:
+        - username
+        - fullName
+      properties:
+        username:
+          type: string
+          example: "new.user"
+        fullName:
+          type: string
+          example: "New User"
+        licenseType:
+          type: string
+          example: "Full User"
+
+    MessageResponse:
+      type: object
+      properties:
+        message:
+          type: string
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error type
+        message:
+          type: string
+          description: Human-readable error message
+
+  responses:
+    UnauthorizedError:
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error: "Unauthorized"
+            message: "Please log in to access this resource"
+
+  securitySchemes:
+    sessionAuth:
+      type: apiKey
+      in: cookie
+      name: connect.sid
+      description: Session-based authentication using HTTP cookies
+
+security:
+  - sessionAuth: []

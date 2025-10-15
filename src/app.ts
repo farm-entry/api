@@ -4,11 +4,21 @@ import { Request, Response, NextFunction } from "express";
 import routes from "./routes/index.js";
 import createSessionConfig from "./config/session.js";
 import authRoutes from "./routes/authRoutes.js";
+import swaggerUi, { swaggerDocument, swaggerOptions } from "./config/swagger.js";
 
 const app = express();
 
 app.use(express.json());
 app.use(session(createSessionConfig()));
+
+// Swagger Documentation
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, swaggerOptions));
+
+// Swagger JSON endpoint
+app.get('/api-docs.json', (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(swaggerDocument);
+});
 
 const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
   if (req.session && req.session.user) {
