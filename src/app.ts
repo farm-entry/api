@@ -16,7 +16,7 @@ const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
   } else {
     res.status(401).json({
       error: "Unauthorized",
-      message: "Please log in to access this resource"
+      message: "Please log in to access this resource",
     });
   }
 };
@@ -27,11 +27,11 @@ app.get("/health", (req, res) => {
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
     memory: process.memoryUsage(),
-    env: process.env.NODE_ENV
+    env: process.env.NODE_ENV,
   });
 });
 
-app.use("/auth", authRoutes);
+app.use("/", authRoutes);
 app.use("/api", isAuthenticated, routes);
 
 export default app;

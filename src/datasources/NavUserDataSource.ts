@@ -1,16 +1,17 @@
-import { Request, Response } from 'express';
-import UserSettingsModel from '../models/UserSettings.js';
-import { navGet, NavODataOptions } from '../datasources/NavConfig.js';
+import { Request, Response } from "express";
+import UserSettingsModel from "../models/UserSettings.js";
+import { navGet, NavODataOptions } from "./navConfig.js";
 
 export const getNavUserByName = async (username: string) => {
   const options: NavODataOptions = {
-    filter: `User_Name eq '${username}'`
+    filter: `User_Name eq '${username}'`,
   };
-  return await navGet('Users', options);
+  const user = await navGet("Users", options);
+  return user;
 };
 
 export const getUsers = async (req: Request, res: Response) => {
-  return await navGet('Users');
+  return await navGet("Users");
 };
 
 // export const createUserSettings = async (req: Request, res: Response) => {
@@ -24,10 +25,3 @@ export const getUsers = async (req: Request, res: Response) => {
 //     res.status(500).json({ message: "Error creating user" });
 //   }
 // };
-
-const userController = {
-  getNavUserByName,
-  getUsers
-};
-
-export default userController;
