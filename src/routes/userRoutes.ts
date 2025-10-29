@@ -3,6 +3,7 @@ import {
   createUser,
   getUserByName,
   getNavUsers,
+  getUserSettings,
 } from "../controllers/userController.js";
 
 const userRouter: Router = Router();
