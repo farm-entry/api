@@ -55,6 +55,7 @@ authRoutes.post("/login", async (req, res) => {
     res.json({
       message: "Login successful",
       user: req.session.user,
+      sessionID: req.session,
     });
   } else {
     res.status(400).json({

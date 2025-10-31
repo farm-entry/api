@@ -1,8 +1,12 @@
 import { Router } from "express";
-import { getJobs } from "../controllers/livestockController.js";
+import {
+  getJobs,
+  getStandardJournalsByTemplate,
+} from "../controllers/livestockController.js";
 
 const livestockRouter: Router = Router();
 
-livestockRouter.get("/", getJobs);
+livestockRouter.get("/jobs", getJobs);
+livestockRouter.get("/events", getStandardJournalsByTemplate);
 
 export default livestockRouter;

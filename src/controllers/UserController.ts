@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import UserSettingsModel from "../models/UserSettings.js";
 import { navGet } from "../datasources/navConfig.js";
 import { getNavUserByName } from "../datasources/navUserDataSource.js";
-import { getLivestockJobs } from "../datasources/navJobDataSource.js";
 
 export const getUserByName = async (req: Request, res: Response) => {
   const user = await getNavUserByName(req.params.name);
