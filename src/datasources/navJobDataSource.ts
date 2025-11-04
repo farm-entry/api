@@ -13,5 +13,3 @@ export const getStandardJournals = async (
   };
   return await navGet(`/StandardItemJournals`, options);
 };
-
-export const;

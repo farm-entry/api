@@ -1,4 +1,4 @@
-export interface NavConfig {
+export interface INavConfig {
   baseUrl: string;
   username: string;
   password: string;
