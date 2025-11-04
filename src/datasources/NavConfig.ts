@@ -1,4 +1,4 @@
-import { NavConfig } from "../types/types.js";
+import { INavConfig } from "../types/types.js";
 
 export interface NavODataOptions {
   filter?: string;
@@ -204,7 +204,7 @@ const parseBody = async (response: Response) => {
 //   }
 // }
 
-export function createNavConfig(): NavConfig {
+export function createNavConfig(): INavConfig {
   const baseUrl = process.env.NAV_BASE_URL;
   const username = process.env.NAV_USER;
   const password = process.env.NAV_ACCESS_KEY;

@@ -1,7 +1,7 @@
 import {
   getLivestockJobs,
   getStandardJournals,
-} from "../datasources/navJobDataSource.js";
+} from "../datasources/NavJobDataSource.js";
 
 const getJobs = async () => {
   return await getLivestockJobs();

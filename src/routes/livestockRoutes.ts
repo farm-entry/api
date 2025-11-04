@@ -2,7 +2,7 @@ import { Router } from "express";
 import {
   getJobs,
   getStandardJournalsByTemplate,
-} from "../controllers/livestockController.js";
+} from "../controllers/LivestockController.js";
 
 const livestockRouter: Router = Router();
 

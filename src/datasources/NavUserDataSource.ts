@@ -1,16 +1,17 @@
-import { Request, Response } from "express";
-import UserSettingsModel from "../models/UserSettings.js";
-import { navGet, NavODataOptions } from "./navConfig.js";
+import { navGet, NavODataOptions } from "./NavConfig.js";
+import { NavUser } from "../types/nav.js";
 
-export const getNavUserByName = async (username: string) => {
+export const getNavUserByName = async (
+  username: string
+): Promise<NavUser | undefined> => {
   const options: NavODataOptions = {
     filter: `User_Name eq '${username}'`,
   };
-  const user = await navGet("Users", options);
-  return user;
+  const user: NavUser[] = await navGet("Users", options);
+  return user.length > 0 ? user[0] : undefined;
 };
 
-export const getUsers = async (req: Request, res: Response) => {
+export const getUsers = async () => {
   return await navGet("Users");
 };
 

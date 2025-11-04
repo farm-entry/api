@@ -4,7 +4,7 @@ import {
   getUserByName,
   getNavUsers,
   getUserSettings,
-} from "../controllers/userController.js";
+} from "../controllers/UserController.js";
 
 const userRouter: Router = Router();
 

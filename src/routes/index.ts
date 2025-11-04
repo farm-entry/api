@@ -1,6 +1,6 @@
 import { Router } from "express";
-import userRouter from "./userRoutes.js";
-import livestockRouter from "./livestockRoutes.js";
+import userRouter from "./UserRoutes.js";
+import livestockRouter from "./LivestockRoutes.js";
 
 const router: Router = Router();
 router.use("/user", userRouter);
