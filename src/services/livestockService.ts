@@ -4,7 +4,9 @@ import {
 } from "../datasources/NavJobDataSource.js";
 
 const getJobs = async () => {
-  return await getLivestockJobs();
+  const navJobs = await getLivestockJobs();
+  //TODO: Map to payloads
+  return navJobs;
 };
 
 const getStandardJournalsByTemplate = async (template: string) => {
