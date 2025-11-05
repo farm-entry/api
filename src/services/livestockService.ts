@@ -2,11 +2,16 @@ import {
   getLivestockJobs,
   getStandardJournals,
 } from "../datasources/NavJobDataSource.js";
+import { Job } from "../payloads/Job.js";
 
 const getJobs = async () => {
   const navJobs = await getLivestockJobs();
-  //TODO: Map to payloads
-  return navJobs;
+  const jobs = await Promise.all(
+    navJobs.map((job) => {
+      return Job.create(job);
+    })
+  );
+  return jobs;
 };
 
 const getStandardJournalsByTemplate = async (template: string) => {

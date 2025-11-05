@@ -4,13 +4,13 @@ import { ICodeDescription } from "./types.js";
 export interface IJob {
   number: string;
   description: string;
-  personResponsible: NavResource;
+  personResponsible?: NavResource;
   inventory: number;
   deadQuantity: number;
   startDate: string;
   endDate: string;
-  groupStartDate: string;
-  location: NavLocation;
+  // groupStartDate: string;
+  location?: NavLocation;
   projectManager?: NavUser;
   status: string;
   startQuantity: number;

@@ -11,13 +11,13 @@ const DATE_FORMAT = "yyyy-MM-dd";
 export class Job implements IJob {
   number: string;
   description: string;
-  personResponsible: NavResource;
+  personResponsible?: NavResource;
   inventory: number;
   deadQuantity: number;
   startDate: string;
   endDate: string;
-  groupStartDate: string;
-  location: NavLocation;
+  //groupStartDate: string;
+  location?: NavLocation;
   projectManager?: NavUser;
   status: string;
   startQuantity: number;
@@ -26,8 +26,8 @@ export class Job implements IJob {
 
   private constructor(
     data: NavJob,
-    personResponsible: NavResource,
-    location: NavLocation,
+    personResponsible?: NavResource,
+    location?: NavLocation,
     projectManager?: NavUser
   ) {
     this.number = data.No;
@@ -37,14 +37,14 @@ export class Job implements IJob {
     this.deadQuantity = data.Dead_Quantity;
     this.startDate = data.Starting_Date;
     this.endDate = data.Ending_Date;
-    this.groupStartDate = (() => {
-      const year = Number("20" + data.No.substring(0, 2));
-      const week = Number(data.No.substring(2, 4));
-      const date = getDateFromWeekNumber(week, year);
-      const startDate = lastDayOfWeek(date, { weekStartsOn: 2 });
-      const groupStartDate = format(startDate, DATE_FORMAT);
-      return groupStartDate;
-    })();
+    // this.groupStartDate = (() => {
+    //   const year = Number("20" + data.No.substring(0, 2));
+    //   const week = Number(data.No.substring(2, 4));
+    //   const date = getDateFromWeekNumber(week, year);
+    //   const startDate = lastDayOfWeek(date, { weekStartsOn: 2 });
+    //   const groupStartDate = format(startDate, DATE_FORMAT);
+    //   return groupStartDate;
+    // })();
     this.location = location;
     this.projectManager = projectManager;
     this.status = data.Status;
@@ -54,10 +54,12 @@ export class Job implements IJob {
   }
 
   static async create(job: NavJob): Promise<Job> {
-    const personResponsible: NavResource = await getResourceByCode(
+    const personResponsible: NavResource | undefined = await getResourceByCode(
       job.Person_Responsible
     );
-    const location: NavLocation = await getLocationByCode(job.Location_Code);
+    const location: NavLocation | undefined = await getLocationByCode(
+      job.Location_Code
+    );
     const projectManager: NavUser | undefined = await getNavUserByName(
       job.Project_Manager
     );

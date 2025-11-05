@@ -75,13 +75,22 @@ export async function navGet<T>(
   }
 }
 
-// Convert ODATA response to a more typical REST response.
+// Convert ODATA response to a more typical REST response and omit @odata.context.
 const parseBody = async (response: Response) => {
   const data = (await response.json()) as any;
+
+  const omitODataContext = (obj: any) => {
+    if (obj && typeof obj === "object") {
+      const { "@odata.context": _, ...rest } = obj;
+      return rest;
+    }
+    return obj;
+  };
+
   if (typeof data === "object" && Array.isArray(data.value)) {
-    return data.value;
+    return data.value.map(omitODataContext);
   } else {
-    return data;
+    return omitODataContext(data);
   }
 };
 
