@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import UserSettingsModel from "../models/UserSettings.js";
-import { navGet } from "../datasources/navConfig.js";
-import { getNavUserByName } from "../datasources/navUserDataSource.js";
+import { navGet } from "../datasources/NavConfig.js";
+import { getNavUserByName } from "../datasources/NavUserDataSource.js";
 
 export const getUserByName = async (req: Request, res: Response) => {
   const user = await getNavUserByName(req.params.name);

@@ -1,4 +1,4 @@
-import { NavConfig } from "../types/types.js";
+import { INavConfig } from "../types/types.js";
 
 export interface NavODataOptions {
   filter?: string;
@@ -75,13 +75,22 @@ export async function navGet<T>(
   }
 }
 
-// Convert ODATA response to a more typical REST response.
+// Convert ODATA response to a more typical REST response and omit @odata.context.
 const parseBody = async (response: Response) => {
   const data = (await response.json()) as any;
+
+  const omitODataContext = (obj: any) => {
+    if (obj && typeof obj === "object") {
+      const { "@odata.context": _, ...rest } = obj;
+      return rest;
+    }
+    return obj;
+  };
+
   if (typeof data === "object" && Array.isArray(data.value)) {
-    return data.value;
+    return data.value.map(omitODataContext);
   } else {
-    return data;
+    return omitODataContext(data);
   }
 };
 
@@ -204,7 +213,7 @@ const parseBody = async (response: Response) => {
 //   }
 // }
 
-export function createNavConfig(): NavConfig {
+export function createNavConfig(): INavConfig {
   const baseUrl = process.env.NAV_BASE_URL;
   const username = process.env.NAV_USER;
   const password = process.env.NAV_ACCESS_KEY;

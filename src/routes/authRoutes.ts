@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createNavConfig } from "../datasources/navConfig.js";
+import { createNavConfig } from "../datasources/NavConfig.js";
 
 const authRoutes: Router = Router();
 

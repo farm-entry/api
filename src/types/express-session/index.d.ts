@@ -1,5 +1,5 @@
 import "express-session";
-import { NavConfig } from "../../datasources/navConfig.ts";
+import { NavConfig } from "../../datasources/NavConfig.ts";
 
 declare module "express-session" {
   interface SessionData {

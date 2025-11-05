@@ -1,4 +1,4 @@
-import { navGet, NavODataOptions } from "./navConfig.js";
+import { navGet, NavODataOptions } from "./NavConfig.js";
 import { NavJob, NavStandardItemJournal } from "../types/nav.js";
 
 export const getLivestockJobs = async (): Promise<NavJob[]> => {

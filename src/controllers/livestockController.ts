@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import livestockService from "../services/livestockService.js";
+import livestockService from "../services/LivestockService.js";
 
 export const getJobs = async (req: Request, res: Response) => {
   const jobs = await livestockService.getJobs();
