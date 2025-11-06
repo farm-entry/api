@@ -5,6 +5,12 @@ export const getLivestockJobs = async (): Promise<NavJob[]> => {
   return await navGet("JobsLivestock");
 };
 
+export const getLivestockJob = async (
+  jobNumber: string
+): Promise<NavJob | undefined> => {
+  return await navGet(`JobsLivestock('${jobNumber}')`);
+};
+
 export const getStandardJournals = async (
   template: string
 ): Promise<NavStandardItemJournal[]> => {
