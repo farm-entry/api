@@ -11,7 +11,7 @@ export interface IJob {
   endDate: string;
   // groupStartDate: string;
   location?: NavLocation;
-  projectManager?: NavUser;
+  projectManager?: NavUser; //TODO: use IUser interface and omit security-sensitive field
   status: string;
   startQuantity: number;
   postingGroup: string;

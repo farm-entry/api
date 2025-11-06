@@ -6,6 +6,16 @@ export const getJobs = async (req: Request, res: Response) => {
   res.status(200).json(jobs);
 };
 
+export const getJob = async (req: Request, res: Response) => {
+  const jobNumber = req.params.number;
+  const job = await livestockService.getJobDetails(jobNumber);
+  if (job) {
+    res.status(200).json(job);
+  } else {
+    res.status(404).json({ message: "Job not found" });
+  }
+};
+
 export const getStandardJournalsByTemplate = async (
   req: Request,
   res: Response
