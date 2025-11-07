@@ -55,7 +55,12 @@ authRoutes.post("/login", async (req, res) => {
     res.json({
       message: "Login successful",
       user: req.session.user,
-      sessionID: req.session,
+      sessionID: req.sessionID,
+      debug: {
+        cookieName: req.sessionStore ? 'connect.sid' : 'unknown',
+        sessionExists: !!req.session,
+        userExists: !!req.session.user
+      }
     });
   } else {
     res.status(400).json({
