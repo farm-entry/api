@@ -15,7 +15,7 @@ export async function connectDatabase() {
     logger.info("Attempting to connect to MongoDB...");
     logger.info(
       `MongoDB URL: ${mongoUrl.replace(/\/\/[^:]+:[^@]+@/, "//***:***@")}`
-    ); // Log URL with masked credentials
+    );
 
     await mongoose.connect(mongoUrl, {
       useNewUrlParser: true,
