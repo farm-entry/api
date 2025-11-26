@@ -6,3 +6,7 @@ export const getHealthStatus = async (
 ): Promise<NavHealthStatus | undefined> => {
   return status.length > 0 ? navGet(`HealthStatus('${status}')`) : undefined;
 };
+
+export const getAllHealthStatuses = async (): Promise<NavHealthStatus[]> => {
+  return await navGet("/HealthStatus");
+};
