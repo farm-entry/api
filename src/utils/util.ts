@@ -1,4 +1,5 @@
 import { NextFunction, RequestHandler, Request, Response } from "express";
+import { format } from "date-fns";
 
 export const asyncHandler =
   (fn: RequestHandler) => (req: Request, res: Response, next: NextFunction) =>
@@ -11,4 +12,8 @@ export function getDateFromWeekNumber(w: number, y: number) {
   if (dow <= 4) ISOweekStart.setDate(simple.getDate() - simple.getDay() + 1);
   else ISOweekStart.setDate(simple.getDate() + 8 - simple.getDay());
   return ISOweekStart;
+}
+
+export function navDate(date: Date) {
+  return format(date, "yyyy-MM-dd");
 }

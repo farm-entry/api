@@ -15,7 +15,7 @@ export interface IJob {
   status: string;
   startQuantity: number;
   postingGroup: string;
-  //healthStatus: IHealthStatus;
+  healthStatus?: NavHealthStatus;
 }
 
 export interface IResource {
@@ -24,7 +24,7 @@ export interface IResource {
   unitPrice: number;
 }
 
-export interface ILocation extends ICodeDescription {}
+export interface ILocation extends ICodeDescription { }
 
 export interface IUser {
   userName: string!;

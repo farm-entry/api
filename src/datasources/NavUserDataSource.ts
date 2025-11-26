@@ -1,4 +1,4 @@
-import { navGet, NavODataOptions } from "./NavConfig.js";
+import { buildFilter, navGet, NavODataOptions } from "./NavConfig.js";
 import { NavUser } from "../types/nav.js";
 
 export const getNavUserByName = async (
@@ -7,7 +7,8 @@ export const getNavUserByName = async (
   const options: NavODataOptions = {
     filter: `User_Name eq '${username}'`,
   };
-  const user: NavUser[] = await navGet("Users", options);
+  const filter = buildFilter((f) => f.equals("User_Name", username));
+  const user: NavUser[] = await navGet("Users", filter);
   return user.length > 0 ? user[0] : undefined;
 };
 
