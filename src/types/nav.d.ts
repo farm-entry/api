@@ -1,3 +1,5 @@
+import { ICodeDescription } from "./types.js";
+
 export interface NavCodeName {
   Code: string;
   Name: string;
@@ -64,7 +66,9 @@ export interface NavItemJournalLine {
   Job_No: string;
 }
 
-export interface NavLocation {}
+export interface NavLocation { }
+
+export interface NavHealthStatus extends ICodeDescription { }
 
 ////////////
 // ENUMS //
