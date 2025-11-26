@@ -20,6 +20,8 @@ export async function connectDatabase() {
     await mongoose.connect(mongoUrl, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
+      useCreateIndex: true,
+      useFindAndModify: false,
     });
 
     logger.info("MongoDB connected successfully");
