@@ -11,6 +11,11 @@ import swaggerUi, {
 
 const app = express();
 
+// Trust proxy for Heroku
+if (process.env.NODE_ENV === 'production' || process.env.DYNO) {
+  app.set('trust proxy', 1);
+}
+
 app.use(express.json());
 app.use(session(createSessionConfig()));
 
@@ -47,6 +52,20 @@ app.get("/health", (req, res) => {
     uptime: process.uptime(),
     memory: process.memoryUsage(),
     env: process.env.NODE_ENV,
+  });
+});
+
+// Debug endpoint for Heroku
+app.get("/debug/session", (req, res) => {
+  res.json({
+    sessionID: req.sessionID,
+    hasSession: !!req.session,
+    hasUser: !!(req.session && req.session.user),
+    isProduction: process.env.NODE_ENV === 'production',
+    isHeroku: !!process.env.DYNO,
+    trustProxy: app.get('trust proxy'),
+    cookies: req.headers.cookie,
+    userAgent: req.headers['user-agent']
   });
 });
 
