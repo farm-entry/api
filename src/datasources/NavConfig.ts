@@ -1,3 +1,8 @@
+import {
+  BooleanFilterExpression,
+  compileFilter,
+  FilterFunction,
+} from "../config/filter.js";
 import { INavConfig } from "../types/types.js";
 
 export interface NavODataOptions {
@@ -7,6 +12,10 @@ export interface NavODataOptions {
   top?: number;
   skip?: number;
 }
+
+const baseUrl = process.env.NAV_BASE_URL;
+const username = process.env.NAV_USER;
+const password = process.env.NAV_ACCESS_KEY;
 
 const createHeaders = (username: string, password: string): HeadersInit => {
   const credentials = btoa(`${username}:${password}`);
@@ -19,44 +28,30 @@ const createHeaders = (username: string, password: string): HeadersInit => {
   };
 };
 
-const buildUrl = (
-  baseUrl: string,
-  endpoint: string,
-  options?: NavODataOptions
-): string => {
+const buildUrl = (endpoint: string, filter?: string): string => {
   let url = `${baseUrl}/${endpoint}`;
-
-  if (options) {
-    const queryParams = new URLSearchParams();
-
-    if (options.filter) queryParams.append("$filter", options.filter);
-    // if (options.select) queryParams.append('$select', options.select);
-    // if (options.orderby) queryParams.append('$orderby', options.orderby);
-    // if (options.top) queryParams.append('$top', options.top.toString());
-    // if (options.skip) queryParams.append('$skip', options.skip.toString());
-
-    const queryString = queryParams.toString();
-    if (queryString) {
-      url += `?${queryString}`;
-    }
+  if (filter) {
+    url += `?$filter=${encodeURIComponent(filter)}`;
   }
   return url;
 };
 
-export async function navGet<T>(
-  endpoint: string,
-  options?: NavODataOptions
-): Promise<T> {
+export const buildFilter: (fn: FilterFunction) => string = (fn) => {
+  return compileFilter(fn);
+};
+
+export async function navGet<T>(endpoint: string, filter?: string): Promise<T> {
   try {
-    const baseUrl = process.env.NAV_BASE_URL;
-    const username = process.env.NAV_USER;
-    const password = process.env.NAV_ACCESS_KEY;
     if (!baseUrl || !username || !password) {
       throw new Error(
         "NAV environment variables NAV_BASE_URL, NAV_USER, or NAV_ACCESS_KEY are missing."
       );
     }
-    const url = buildUrl(baseUrl, endpoint, options);
+    let url = `${baseUrl}/${endpoint}`;
+    if (filter) {
+      url += `?$filter=${filter}`;
+    }
+    console.log("NAV GET URL:", url);
     const response = await fetch(url, {
       method: "GET",
       headers: createHeaders(username, password),
@@ -71,6 +66,34 @@ export async function navGet<T>(
     return await parseBody(response);
   } catch (error) {
     console.error("Error fetching from Nav OData:", error);
+    throw error;
+  }
+}
+
+export async function navPost<T>(endpoint: string, payload: any): Promise<T> {
+  try {
+    if (!baseUrl || !username || !password) {
+      throw new Error(
+        "NAV environment variables NAV_BASE_URL, NAV_USER, or NAV_ACCESS_KEY are missing."
+      );
+    }
+    const url = `${baseUrl}/${endpoint}`;
+    const response = await fetch(url, {
+      method: "POST",
+      headers: createHeaders(username, password),
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(
+        `Nav OData error! status: ${response.status}, message: ${errorText}`
+      );
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error posting to Nav OData:", error);
     throw error;
   }
 }
@@ -93,67 +116,6 @@ const parseBody = async (response: Response) => {
     return omitODataContext(data);
   }
 };
-
-// export async function navPost<T>(
-//   config: NavConfig,
-//   endpoint: string,
-//   data: any
-// ): Promise<T>;
-// export async function navPost<T>(
-//   req: any,
-//   endpoint: string,
-//   data: any
-// ): Promise<T>;
-// export async function navPost<T>(
-//   configOrReq: NavConfig | any,
-//   endpoint: string,
-//   data: any
-// ): Promise<T> {
-//   try {
-//     // Check if first parameter is a request object or config object
-//     let config: NavConfig;
-//     if (configOrReq.session && configOrReq.session.navConfig) {
-//       // It's a request object
-//       config = configOrReq.session.navConfig;
-//       if (!config) {
-//         throw new Error(
-//           "NAV configuration not found in session. Please log in again."
-//         );
-//       }
-//     } else if (
-//       configOrReq.baseUrl &&
-//       configOrReq.username &&
-//       configOrReq.password
-//     ) {
-//       // It's a config object
-//       config = configOrReq;
-//     } else {
-//       throw new Error(
-//         "Invalid parameter: expected NavConfig or Request with session"
-//       );
-//     }
-
-//     const url = `${config.baseUrl}/${endpoint}`;
-
-//     const response = await fetch(url, {
-//       method: "POST",
-//       headers: createHeaders(config.username, config.password),
-//       body: JSON.stringify(data),
-//     });
-
-//     if (!response.ok) {
-//       const errorText = await response.text();
-//       throw new Error(
-//         `Nav OData error! status: ${response.status}, message: ${errorText}`
-//       );
-//     }
-
-//     return await response.json();
-//   } catch (error) {
-//     console.error("Error posting to Nav OData:", error);
-//     throw error;
-//   }
-// }
 
 // export async function navPatch<T>(
 //   config: NavConfig,

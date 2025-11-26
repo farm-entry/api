@@ -1,10 +1,12 @@
 import { getLocationByCode } from "../datasources/NavLocationDataSource.js";
 import { getResourceByCode } from "../datasources/NavResourceDataSource.js";
-import { NavJob, NavLocation, NavResource, NavUser } from "../types/nav.js";
-import { IJob } from "../types/payload.js";
+import { NavHealthStatus, NavJob, NavLocation, NavResource, NavUser } from "../types/nav.js";
+import { IHealthStatus, IJob } from "../types/payload.js";
 import { format, lastDayOfWeek } from "date-fns";
 import { getDateFromWeekNumber } from "../utils/util.js";
 import { getNavUserByName } from "../datasources/NavUserDataSource.js";
+import { get } from "mongoose";
+import { getHealthStatus } from "../datasources/NavMiscDataSource.js";
 
 const DATE_FORMAT = "yyyy-MM-dd";
 
@@ -22,13 +24,14 @@ export class Job implements IJob {
   status: string;
   startQuantity: number;
   postingGroup: string;
-  //healthStatus: IHealthStatus;
+  healthStatus?: NavHealthStatus;
 
   private constructor(
     data: NavJob,
     personResponsible?: NavResource,
     location?: NavLocation,
-    projectManager?: NavUser
+    projectManager?: NavUser,
+    healthStatus?: NavHealthStatus
   ) {
     this.number = data.No;
     this.description = data.Description;
@@ -50,7 +53,7 @@ export class Job implements IJob {
     this.status = data.Status;
     this.startQuantity = data.Start_Quantity;
     this.postingGroup = data.Job_Posting_Group;
-    // this.healthStatus = data.HealthStatus;
+    this.healthStatus = healthStatus;
   }
 
   static async create(job: NavJob): Promise<Job> {
@@ -63,7 +66,7 @@ export class Job implements IJob {
     const projectManager: NavUser | undefined = await getNavUserByName(
       job.Project_Manager
     );
-
-    return new Job(job, personResponsible, location, projectManager);
+    const healthStatus: NavHealthStatus | undefined = await getHealthStatus(job.HealthStatus);
+    return new Job(job, personResponsible, location, projectManager, healthStatus);
   }
 }

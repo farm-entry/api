@@ -1,4 +1,4 @@
-import { navGet, NavODataOptions } from "./NavConfig.js";
+import { navGet, NavODataOptions, buildFilter } from "./NavConfig.js";
 import { NavJob, NavStandardItemJournal } from "../types/nav.js";
 
 export const getLivestockJobs = async (): Promise<NavJob[]> => {
@@ -14,8 +14,8 @@ export const getLivestockJob = async (
 export const getStandardJournals = async (
   template: string
 ): Promise<NavStandardItemJournal[]> => {
-  const options: NavODataOptions = {
-    filter: `Journal_Template_Name eq '${template}'`,
-  };
-  return await navGet(`/StandardItemJournals`, options);
+  const filter = buildFilter((f) =>
+    f.equals("Journal_Template_Name", template)
+  );
+  return await navGet(`/StandardItemJournals`, filter);
 };

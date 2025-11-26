@@ -3,6 +3,7 @@ import {
   getLivestockJob,
   getStandardJournals,
 } from "../datasources/NavJobDataSource.js";
+import { getStandardJournalLines } from "../datasources/NavItemJournalDataSource.js";
 import { Job } from "../payloads/Job.js";
 
 const getJobs = async () => {
@@ -24,10 +25,15 @@ const getStandardJournalsByTemplate = async (template: string) => {
   return await getStandardJournals(template);
 };
 
+const getNavStandardJournalLines = async (template: string, code: string) => {
+  return await getStandardJournalLines(template, code);
+};
+
 const livestockService = {
   getJobs,
   getJobDetails,
   getStandardJournalsByTemplate,
+  getNavStandardJournalLines,
 };
 
 export default livestockService;
