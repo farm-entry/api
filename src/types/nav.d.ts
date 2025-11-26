@@ -1,3 +1,5 @@
+import { ICodeDescription } from "./types.js";
+
 export interface NavCodeName {
   Code: string;
   Name: string;
@@ -40,4 +42,6 @@ export interface NavResource {
   Unit_Price: number;
 }
 
-export interface NavLocation {}
+export interface NavLocation { }
+
+export interface NavHealthStatus extends ICodeDescription { }
