@@ -18,7 +18,7 @@
     "dotenv": "^17.2.2",
     "express": "^4.21.1",
     "express-session": "^1.18.2",
-    "mongoose": "^5.10.9",
+    "mongoose": "^9.0.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "yamljs": "^0.3.0"

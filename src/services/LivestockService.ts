@@ -7,13 +7,7 @@ import { getStandardJournalLines } from "../datasources/NavItemJournalDataSource
 import { Job } from "../payloads/Job.js";
 
 const getJobs = async () => {
-  const navJobs = await getLivestockJobs();
-  const jobs = await Promise.all(
-    navJobs.map((job) => {
-      return Job.create(job);
-    })
-  );
-  return jobs;
+  return await getLivestockJobs();
 };
 
 const getJobDetails = async (jobNumber: string): Promise<Job | undefined> => {
@@ -29,11 +23,16 @@ const getNavStandardJournalLines = async (template: string, code: string) => {
   return await getStandardJournalLines(template, code);
 };
 
+const postEntry = async (entryData: any) => {
+  console.log("Posting entry:", entryData);
+}
+
 const livestockService = {
   getJobs,
   getJobDetails,
   getStandardJournalsByTemplate,
   getNavStandardJournalLines,
+  postEntry
 };
 
 export default livestockService;
