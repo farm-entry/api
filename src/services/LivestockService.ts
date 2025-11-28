@@ -7,6 +7,14 @@ import { getStandardJournalLines } from "../datasources/NavItemJournalDataSource
 import { Job } from "../payloads/Job.js";
 
 const getJobs = async () => {
+  const navJobs = await getLivestockJobs();
+  const jobs = await Promise.all(
+    navJobs.map((job) => {
+      return Job.create(job);
+    })
+  );
+  return navJobs;
+
   return await getLivestockJobs();
 };
 
