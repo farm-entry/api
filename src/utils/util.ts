@@ -17,3 +17,9 @@ export function getDateFromWeekNumber(w: number, y: number) {
 export function navDate(date: Date) {
   return format(date, "yyyy-MM-dd");
 }
+
+export function getDocumentNumber(form: string, username: string) {
+  const name = username.slice(0, 8 - form.length);
+  const date = format(new Date(), "yyMMddHHmmss");
+  return `${form}${name}${date}`;
+}

@@ -1,11 +1,14 @@
 import { getLocationByCode } from "../datasources/NavLocationDataSource.js";
 import { getResourceByCode } from "../datasources/NavResourceDataSource.js";
-import { NavHealthStatus, NavJob, NavLocation, NavResource, NavUser } from "../types/nav.js";
-import { IHealthStatus, IJob } from "../types/payload.js";
-import { format, lastDayOfWeek } from "date-fns";
-import { getDateFromWeekNumber } from "../utils/util.js";
+import {
+  NavHealthStatus,
+  NavJob,
+  NavLocation,
+  NavResource,
+  NavUser,
+} from "../types/nav.js";
+import { IJob } from "../types/payload.js";
 import { getNavUserByName } from "../datasources/NavUserDataSource.js";
-import { get } from "mongoose";
 import { getHealthStatus } from "../datasources/NavMiscDataSource.js";
 
 const DATE_FORMAT = "yyyy-MM-dd";
@@ -18,8 +21,8 @@ export class Job implements IJob {
   deadQuantity: number;
   startDate: string;
   endDate: string;
-  //groupStartDate: string;
-  location?: NavLocation;
+  //groupStartDate: string; //will be needed for scorecard (and mortality post)
+  location?: NavLocation | string;
   projectManager?: NavUser;
   status: string;
   startQuantity: number;
@@ -48,7 +51,7 @@ export class Job implements IJob {
     //   const groupStartDate = format(startDate, DATE_FORMAT);
     //   return groupStartDate;
     // })();
-    this.location = location;
+    this.location = location ? location : data.Location_Code;
     this.projectManager = projectManager;
     this.status = data.Status;
     this.startQuantity = data.Start_Quantity;
@@ -66,7 +69,15 @@ export class Job implements IJob {
     const projectManager: NavUser | undefined = await getNavUserByName(
       job.Project_Manager
     );
-    const healthStatus: NavHealthStatus | undefined = await getHealthStatus(job.HealthStatus);
-    return new Job(job, personResponsible, location, projectManager, healthStatus);
+    const healthStatus: NavHealthStatus | undefined = await getHealthStatus(
+      job.HealthStatus
+    );
+    return new Job(
+      job,
+      personResponsible,
+      location,
+      projectManager,
+      healthStatus
+    );
   }
 }

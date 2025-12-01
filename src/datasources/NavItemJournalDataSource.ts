@@ -1,4 +1,4 @@
-import { BooleanFilterExpression } from "../config/filter.js";
+import { logger } from "../config/logger.js";
 import { NavItemJournalLine } from "../types/nav.js";
 import { navDate } from "../utils/util.js";
 import { navGet, buildFilter, navPost } from "./NavConfig.js";
@@ -8,12 +8,12 @@ export interface StandardJournalOptions {
   template: string;
 }
 
-export async function postItemJournalLine(
-  entry: Partial<NavItemJournalLine>
-): Promise<NavItemJournalLine> {
+export async function postItemJournalLine(entry: Partial<NavItemJournalLine>) {
   const date = navDate(new Date());
   entry.Document_Date = date;
-  entry.Posting_Date = entry.Posting_Date || date;
+  entry.Posting_Date = entry.Posting_Date
+    ? entry.Posting_Date.split("T")[0] || date
+    : date;
   entry.Description = entry.Description || " ";
   return navPost("/ItemJournal", entry);
 }

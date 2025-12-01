@@ -15,7 +15,7 @@ export interface NavUser {
 export interface NavJob {
   No: string;
   Description: string;
-  Person_Responsible: string; //person object
+  Person_Responsible: string;
   Barn_Type: string;
   Location_Code: string;
   Entity: string;
@@ -66,9 +66,12 @@ export interface NavItemJournalLine {
   Job_No: string;
 }
 
-export interface NavLocation { }
+export interface NavLocation {
+  Code: string;
+  Name: string;
+}
 
-export interface NavHealthStatus extends ICodeDescription { }
+export interface NavHealthStatus extends ICodeDescription {}
 
 ////////////
 // ENUMS //
@@ -105,4 +108,15 @@ export enum NavReasonCode {
 //TODO - does this need to be here or just on post?
 export enum NavItemJournalBatch {
   FarmApp = "FARMAPP",
+}
+
+export enum NavItemJournalTemplate {
+  Mortality = "MORTALITY",
+  Adjustment = "QTYADJ",
+  GradeOff = "GRADEOFF",
+  Move = "MOVE",
+  Wean = "WEAN",
+  Purchase = "PURCHASE",
+  Shipment = "SHIPMENT",
+  Inventory = "INVENTORY",
 }
