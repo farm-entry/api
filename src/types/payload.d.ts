@@ -17,20 +17,3 @@ export interface IJob {
   postingGroup: string;
   healthStatus?: NavHealthStatus;
 }
-
-export interface IResource {
-  number: string!;
-  name: string!;
-  unitPrice: number;
-}
-
-export interface ILocation extends ICodeDescription { }
-
-export interface IUser {
-  userName: string!;
-  name: string;
-}
-
-export interface IHealthStatus extends ICodeDescription {
-  color: string;
-}

@@ -20,11 +20,9 @@ const password = process.env.NAV_ACCESS_KEY;
 const createHeaders = (username: string, password: string): HeadersInit => {
   const credentials = btoa(`${username}:${password}`);
   return {
-    Accept: "application/json",
+    Accept: "*/*",
     "Content-Type": "application/json",
     Authorization: `Basic ${credentials}`,
-    "OData-Version": "4.0",
-    "OData-MaxVersion": "4.0",
   };
 };
 
@@ -51,7 +49,6 @@ export async function navGet<T>(endpoint: string, filter?: string): Promise<T> {
     if (filter) {
       url += `?$filter=${filter}`;
     }
-    console.log("NAV GET URL:", url);
     const response = await fetch(url, {
       method: "GET",
       headers: createHeaders(username, password),

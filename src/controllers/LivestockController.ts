@@ -46,3 +46,10 @@ export const getStandardJournalLines = async (req: Request, res: Response) => {
   );
   res.status(200).json(lines);
 };
+
+export const postEntry = async (req: Request, res: Response) => {
+  const input = req.body;
+  const user = req.session.user;
+  await livestockService.postEntry(input, user);
+  res.status(201).json({ message: "Entry posted successfully" });
+};
