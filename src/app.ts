@@ -8,12 +8,13 @@ import swaggerUi, {
   swaggerDocument,
   swaggerOptions,
 } from "./config/swagger.js";
+import { errorMiddleware } from "./middlewares/ErrorMiddleware.js";
 
 const app = express();
 
 // Trust proxy for Heroku
-if (process.env.NODE_ENV === 'production' || process.env.DYNO) {
-  app.set('trust proxy', 1);
+if (process.env.NODE_ENV === "production" || process.env.DYNO) {
+  app.set("trust proxy", 1);
 }
 
 app.use(express.json());
@@ -61,15 +62,16 @@ app.get("/debug/session", (req, res) => {
     sessionID: req.sessionID,
     hasSession: !!req.session,
     hasUser: !!(req.session && req.session.user),
-    isProduction: process.env.NODE_ENV === 'production',
+    isProduction: process.env.NODE_ENV === "production",
     isHeroku: !!process.env.DYNO,
-    trustProxy: app.get('trust proxy'),
+    trustProxy: app.get("trust proxy"),
     cookies: req.headers.cookie,
-    userAgent: req.headers['user-agent']
+    userAgent: req.headers["user-agent"],
   });
 });
 
 app.use("/", authRoutes);
 app.use("/api", isAuthenticated, routes);
+app.use(errorMiddleware);
 
 export default app;
