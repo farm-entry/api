@@ -10,12 +10,13 @@ export interface StandardJournalOptions {
 
 export async function postItemJournalLine(entry: Partial<NavItemJournalLine>) {
   const date = navDate(new Date());
-  entry.Document_Date = date;
-  entry.Posting_Date = entry.Posting_Date
-    ? entry.Posting_Date.split("T")[0] || date
-    : date;
-  entry.Description = entry.Description || " ";
-  return navPost("/ItemJournal", entry);
+  const validEntry = validateEntry(entry);
+  validEntry.Document_Date = validEntry.Document_Date || date;
+  validEntry.Posting_Date = validEntry.Posting_Date || date;
+  validEntry.Description = validEntry.Description || " ";
+
+  logger.info("Posting item journal line:", validEntry);
+  return navPost("/ItemJournal", validEntry);
 }
 
 export const getStandardJournalLines = async (
@@ -36,4 +37,53 @@ export const getStandardJournalLines = async (
     // We have to strip these out so that submitting these lines to the journal doesn't break.
     ({ Standard_Journal_Code, Line_No, ...line }: any) => line
   );
+};
+
+const validateEntry = (
+  entry: Partial<NavItemJournalLine>
+): Partial<NavItemJournalLine> => {
+  const validated: Partial<NavItemJournalLine> = { ...entry };
+  if (validated.Quantity !== undefined) {
+    validated.Quantity =
+      typeof validated.Quantity === "string"
+        ? parseFloat(validated.Quantity) || 0
+        : validated.Quantity;
+  }
+
+  if (validated.Unit_Amount !== undefined) {
+    validated.Unit_Amount =
+      typeof validated.Unit_Amount === "string"
+        ? parseFloat(validated.Unit_Amount) || 0
+        : validated.Unit_Amount;
+  }
+
+  if (validated.Amount !== undefined) {
+    validated.Amount =
+      typeof validated.Amount === "string"
+        ? parseFloat(validated.Amount) || 0
+        : validated.Amount;
+  }
+
+  if (validated.Unit_Cost !== undefined) {
+    validated.Unit_Cost =
+      typeof validated.Unit_Cost === "string"
+        ? parseFloat(validated.Unit_Cost) || 0
+        : validated.Unit_Cost;
+  }
+
+  if (validated.Weight !== undefined) {
+    validated.Weight =
+      typeof validated.Weight === "string"
+        ? parseFloat(validated.Weight) || 0
+        : validated.Weight;
+  }
+
+  if (validated.Meta !== undefined) {
+    validated.Meta =
+      typeof validated.Meta === "string"
+        ? parseFloat(validated.Meta) || 0
+        : validated.Meta;
+  }
+
+  return validated;
 };
