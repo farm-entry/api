@@ -10,6 +10,7 @@ import { movePostEntry } from "./LivestockMove.js";
 import { gradeOffPostEntry } from "./LivestockGradeOff.js";
 import { postWeanEntry } from "./LivestockWean.js";
 import { postAdjustmentEntry } from "./LivestockAdjustment.js";
+import { getStandardJournalLines } from "../../datasources/NavItemJournalDataSource.js";
 
 const getJobs = async () => {
   const navJobs = await getLivestockJobs();
@@ -60,6 +61,7 @@ const livestockService = {
   getJob,
   getJobDetails,
   getStandardJournalsByTemplate,
+  getStandardJournalLines,
   postEntry,
 };
 
