@@ -9,7 +9,7 @@ import {
 import { getDocumentNumber } from "../../utils/util.js";
 import livestockService from "./LivestockService.js";
 
-const postPurchaseEntry = async (input: any, user: any) => {
+export const postPurchaseEntry = async (input: any, user: any) => {
   const [standardJournalLines] = await getStandardJournalLines(
     input.event,
     NavItemJournalTemplate.Purchase

@@ -11,6 +11,9 @@ import { gradeOffPostEntry } from "./LivestockGradeOff.js";
 import { postWeanEntry } from "./LivestockWean.js";
 import { postAdjustmentEntry } from "./LivestockAdjustment.js";
 import { getStandardJournalLines } from "../../datasources/NavItemJournalDataSource.js";
+import { mortalityPostEntry } from "./LivestockMortality.js";
+import { postShipmentEntry } from "./LivestockShipment.js";
+import { postPurchaseEntry } from "./LivestockPurchase.js";
 
 const getJobs = async () => {
   const navJobs = await getLivestockJobs();
@@ -45,12 +48,18 @@ const postEntry = async (input: any, user: any) => {
   switch (formType) {
     case NavItemJournalTemplate.Adjustment:
       return await postAdjustmentEntry(input, user);
-    case NavItemJournalTemplate.Wean:
-      return await postWeanEntry(input, user);
     case NavItemJournalTemplate.GradeOff:
       return await gradeOffPostEntry(input, user);
+    case NavItemJournalTemplate.Mortality:
+      return await mortalityPostEntry(input, user);
     case NavItemJournalTemplate.Move:
       return await movePostEntry(input, user);
+    case NavItemJournalTemplate.Purchase:
+      return await postPurchaseEntry(input, user);
+    case NavItemJournalTemplate.Shipment:
+      return await postShipmentEntry(input, user);
+    case NavItemJournalTemplate.Wean:
+      return await postWeanEntry(input, user);
     default:
       throw Error(`Event type ${input.eventType} not supported.`);
   }
