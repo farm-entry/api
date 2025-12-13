@@ -1,19 +1,22 @@
 import { NextFunction, Request, Response } from "express";
-import { APP_ERROR_MESSAGE } from "../constants/constants.js";
+
+interface CustomError extends Error {
+  status?: number;
+  message: string;
+}
 
 export const errorMiddleware = (
-  err: Error,
+  err: CustomError,
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  console.error("Unhandled error:", err);
-  if (res.headersSent) {
-    return next(err);
-  }
-  res.status(500).json({
-    error: "Internal Server Error",
-    message: "Something went wrong on our end. Please try again later.",
+  const status = err.status || 500;
+  const message = err.message || "Something went wrong on our end";
+
+  res.status(status).json({
+    error: "Error",
+    message,
     timestamp: new Date().toISOString(),
   });
 };
