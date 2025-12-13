@@ -9,7 +9,8 @@ export const NavItemJournalTemplateLookup = {
   INVENTORY: "INVENTORY",
 } as const;
 
-export type NavItemJournalTemplate = keyof typeof NavItemJournalTemplateLookup;
+export type NavItemJournalTemplateType =
+  keyof typeof NavItemJournalTemplateLookup;
 
 export enum NavEntryType {
   Positive = "Positive Adjmt.",
@@ -31,4 +32,15 @@ export enum NavReasonCode {
 //TODO - does this need to be here or just on post?
 export enum NavItemJournalBatch {
   FarmApp = "FARMAPP",
+}
+
+export enum NavItemJournalTemplate {
+  Mortality = "MORTALITY",
+  Adjustment = "QTYADJ",
+  GradeOff = "GRADEOFF",
+  Move = "MOVE",
+  Wean = "WEAN",
+  Purchase = "PURCHASE",
+  Shipment = "SHIPMENT",
+  Inventory = "INVENTORY",
 }

@@ -1,4 +1,10 @@
 import { ICodeDescription } from "./types.js";
+import {
+  NavEntryType,
+  NavReasonCode,
+  NavItemJournalTemplate,
+  NavItemJournalBatch,
+} from "./enum.js";
 
 export interface NavCodeName {
   Code: string;
@@ -31,11 +37,13 @@ export interface NavJob {
   Status: string;
   HealthStatus: string;
 }
+
 export interface NavStandardItemJournal {
   Journal_Template_Name: string;
   Code: string;
   Description: string;
 }
+
 export interface NavResource {
   No: string;
   Name: string;
@@ -71,52 +79,11 @@ export interface NavLocation {
   Name: string;
 }
 
+export interface NavInventory {
+  Job_No: string;
+  StartQty: number;
+  StartValue: number;
+  AuxiliaryIndex1: string;
+}
+
 export interface NavHealthStatus extends ICodeDescription {}
-
-////////////
-// ENUMS //
-////////////
-
-export enum NavItemJournalTemplate {
-  Mortality = "MORTALITY",
-  Adjustment = "QTYADJ",
-  GradeOff = "GRADEOFF",
-  Move = "MOVE",
-  Wean = "WEAN",
-  Purchase = "PURCHASE",
-  Shipment = "SHIPMENT",
-  Inventory = "INVENTORY",
-}
-
-export enum NavEntryType {
-  Positive = "Positive Adjmt.",
-  Negative = "Negative Adjmt.",
-}
-
-export enum NavReasonCode {
-  NaturalDeath = "DEAD-NAT",
-  Euthanized = "DEAD-EUTH",
-  GradeOffLame = "GRLAME",
-  GradeOffRespitory = "GRRESP",
-  GradeOffBellyRupture = "GRBRUPT",
-  GradeOffScrotumRupture = "GRSRUPT",
-  GradeOffScours = "GRSCOURS",
-  GradeOffSmall = "GRSMALL",
-  GradeOffUnthrifty = "GRUNTHRIFT",
-}
-
-//TODO - does this need to be here or just on post?
-export enum NavItemJournalBatch {
-  FarmApp = "FARMAPP",
-}
-
-export enum NavItemJournalTemplate {
-  Mortality = "MORTALITY",
-  Adjustment = "QTYADJ",
-  GradeOff = "GRADEOFF",
-  Move = "MOVE",
-  Wean = "WEAN",
-  Purchase = "PURCHASE",
-  Shipment = "SHIPMENT",
-  Inventory = "INVENTORY",
-}
