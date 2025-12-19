@@ -2,6 +2,7 @@ import {
   getStandardJournalLines,
   postItemJournalLine,
 } from "../../datasources/NavItemJournalDataSource.js";
+import { getLivestockJob } from "../../datasources/NavJobDataSource.js";
 import { getInventoryByJob } from "../../datasources/NavLocationDataSource.js";
 import {
   NavItemJournalTemplate,
@@ -29,8 +30,16 @@ export const movePostEntry = async (input: any, user: any) => {
   }
 
   const docNo = getDocumentNumber("MOVE", user.name);
-  const fromJob = await livestockService.getJob(input.fromJob);
-  const toJob = await livestockService.getJob(input.toJob);
+  const fromJob = await getLivestockJob(input.fromJob);
+  const toJob = await getLivestockJob(input.toJob);
+
+  if (!fromJob) {
+    throw Error(`From job ${input.fromJob} not found.`);
+  }
+
+  if (!toJob) {
+    throw Error(`To job ${input.toJob} not found.`);
+  }
 
   const negPrice: number = await getUnitCost(standardJournalNeg, input.fromJob);
   const posPrice: number = await getUnitCost(standardJournalPos, input.fromJob); //use fromJob for both cost basis

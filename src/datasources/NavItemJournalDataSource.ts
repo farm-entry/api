@@ -1,5 +1,5 @@
 import { logger } from "../config/logger.js";
-import { NavItemJournalLine } from "../types/nav.js";
+import { NavItemJournalLine, NavStandardItemJournal } from "../types/nav.js";
 import { navDate } from "../utils/util.js";
 import { navGet, buildFilter, navPost } from "./NavConfig.js";
 
@@ -19,6 +19,15 @@ export async function postItemJournalLine(entry: Partial<NavItemJournalLine>) {
   return navPost("/ItemJournal", validEntry);
 }
 
+export const getStandardJournals = async (
+  template: string
+): Promise<NavStandardItemJournal[]> => {
+  const filter = buildFilter((f) =>
+    f.equals("Journal_Template_Name", template)
+  );
+  return await navGet(`/StandardItemJournals`, filter);
+};
+
 export const getStandardJournalLines = async (
   template: string,
   code: string
@@ -36,6 +45,15 @@ export const getStandardJournalLines = async (
   return lines.map(
     // We have to strip these out so that submitting these lines to the journal doesn't break.
     ({ Standard_Journal_Code, Line_No, ...line }: any) => line
+  );
+};
+
+export const getStandardJournalByCode = async (
+  template: string,
+  code: string
+): Promise<NavStandardItemJournal | null> => {
+  return navGet(
+    `/StandardItemJournals(Journal_Template_Name='${template}', Code='${code}')`
   );
 };
 

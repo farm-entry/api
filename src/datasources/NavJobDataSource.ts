@@ -11,11 +11,4 @@ export const getLivestockJob = async (
   return await navGet(`JobsLivestock('${jobNumber}')`);
 };
 
-export const getStandardJournals = async (
-  template: string
-): Promise<NavStandardItemJournal[]> => {
-  const filter = buildFilter((f) =>
-    f.equals("Journal_Template_Name", template)
-  );
-  return await navGet(`/StandardItemJournals`, filter);
-};
+

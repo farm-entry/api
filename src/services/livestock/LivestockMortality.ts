@@ -9,6 +9,7 @@ import { NavItemJournalBatch } from "../../types/enum.js";
 import { getDateFromWeekNumber, getDocumentNumber } from "../../utils/util.js";
 import livestockService from "./LivestockService.js";
 import { getResourceByCode } from "../../datasources/NavResourceDataSource.js";
+import { getLivestockJob } from "../../datasources/NavJobDataSource.js";
 
 export const mortalityPostEntry = async (input: any, user: any) => {
   const standardJournalLines = await getStandardJournalLines(
@@ -20,7 +21,10 @@ export const mortalityPostEntry = async (input: any, user: any) => {
     throw Error(`Event ${input.event} not found.`);
   }
 
-  const job = await livestockService.getJob(input.job);
+  const job = await getLivestockJob(input.job);
+  if (!job) {
+    throw Error(`Job ${input.group} not found.`);
+  }
 
   const tempWeeks = calculateTempWeeks(job.No);
   const resourceNo = `${tempWeeks}MORTALITY`;

@@ -2,6 +2,7 @@ import {
   getStandardJournalLines,
   postItemJournalLine,
 } from "../../datasources/NavItemJournalDataSource.js";
+import { getLivestockJob } from "../../datasources/NavJobDataSource.js";
 import { NavItemJournalTemplate } from "../../types/enum.js";
 import { NavItemJournalBatch } from "../../types/enum.js";
 import { getDocumentNumber } from "../../utils/util.js";
@@ -17,7 +18,10 @@ export const gradeOffPostEntry = async (input: any, user: any) => {
     throw Error(`Event ${input.event} not found.`);
   }
 
-  const job = await livestockService.getJob(input.job);
+  const job = await getLivestockJob(input.job);
+  if (!job) {
+    throw Error(`Job ${input.group} not found.`);
+  }
 
   for (const entry of input.quantities) {
     const line = standardJournalLines.find(
