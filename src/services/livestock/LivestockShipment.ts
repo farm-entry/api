@@ -2,12 +2,12 @@ import {
   getStandardJournalLines,
   postItemJournalLine,
 } from "../../datasources/NavItemJournalDataSource.js";
+import { getLivestockJob } from "../../datasources/NavJobDataSource.js";
 import {
   NavItemJournalTemplate,
   NavItemJournalBatch,
 } from "../../types/enum.js";
 import { getDocumentNumber } from "../../utils/util.js";
-import livestockService from "./LivestockService.js";
 
 export const postShipmentEntry = async (input: any, user: any) => {
   const [standardJournal] = await getStandardJournalLines(
@@ -19,7 +19,11 @@ export const postShipmentEntry = async (input: any, user: any) => {
     throw Error(`Event ${input.event} not found.`);
   }
 
-  const job = await livestockService.getJob(input.group);
+  const job = await getLivestockJob(input.group);
+  if (!job) {
+    throw Error(`Job ${input.group} not found.`);
+  }
+
   await postItemJournalLine({
     ...standardJournal,
     Journal_Batch_Name: NavItemJournalBatch.FarmApp,

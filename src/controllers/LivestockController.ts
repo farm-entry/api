@@ -1,5 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import livestockService from "../services/livestock/LivestockService.js";
+import { NavItemJournalTemplate } from "../types/enum.js";
+import { getAllHealthStatuses } from "../datasources/NavMiscDataSource.js";
 
 export const getJobs = async (req: Request, res: Response) => {
   const jobs = await livestockService.getJobs();
@@ -8,8 +10,7 @@ export const getJobs = async (req: Request, res: Response) => {
 
 export const getJob = async (
   req: Request,
-  res: Response,
-  next: NextFunction
+  res: Response
 ) => {
   const jobNumber = req.params.number;
   const job = await livestockService.getJobDetails(jobNumber);
@@ -25,13 +26,21 @@ export const getStandardJournalsByTemplate = async (
   res: Response
 ) => {
   const template = req.query.template as string;
+  const job = req.query.job as string;
+  console.log("Received request with template:", template, "and job:", job);
   if (!template) {
     return res
       .status(400)
       .json({ message: "Template query parameter is required" });
   }
+  if (template === NavItemJournalTemplate.Mortality && !job) {
+    return res
+      .status(400)
+      .json({ message: "Job query parameter is required for Mortality template" });
+  }
   const journals = await livestockService.getStandardJournalsByTemplate(
-    template
+    template,
+    job
   );
   res.status(200).json(journals);
 };
@@ -50,3 +59,9 @@ export const postEntry = async (
     next(error);
   }
 };
+
+export const getHealthStatuses = async (req: Request, res: Response) => {
+  const healthStatuses = await getAllHealthStatuses();
+  res.status(200).json(healthStatuses);
+};
+

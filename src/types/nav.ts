@@ -6,6 +6,11 @@ import {
   NavItemJournalBatch,
 } from "./enum.js";
 
+export interface NavCodeDescription {
+  Code: string;
+  Description: string;
+}
+
 export interface NavCodeName {
   Code: string;
   Name: string;
@@ -86,4 +91,5 @@ export interface NavInventory {
   AuxiliaryIndex1: string;
 }
 
-export interface NavHealthStatus extends ICodeDescription {}
+export interface NavHealthStatus extends NavCodeDescription { }
+export interface NavReason extends NavCodeDescription { }

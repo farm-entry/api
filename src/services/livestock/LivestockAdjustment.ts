@@ -2,16 +2,19 @@ import {
   getStandardJournalLines,
   postItemJournalLine,
 } from "../../datasources/NavItemJournalDataSource.js";
+import { getLivestockJob } from "../../datasources/NavJobDataSource.js";
 import {
   NavEntryType,
   NavItemJournalBatch,
   NavItemJournalTemplate,
 } from "../../types/enum.js";
 import { getDocumentNumber } from "../../utils/util.js";
-import livestockService from "./LivestockService.js";
 
 export const postAdjustmentEntry = async (input: any, user: any) => {
-  const job = await livestockService.getJob(input.job);
+  const job = await getLivestockJob(input.job);
+  if (!job) {
+    throw Error(`Job ${input.group} not found.`);
+  }
   const [standardJournal] = await getStandardJournalLines(
     input.event,
     NavItemJournalTemplate.Adjustment

@@ -2,6 +2,7 @@ import {
   getStandardJournalLines,
   postItemJournalLine,
 } from "../../datasources/NavItemJournalDataSource.js";
+import { getLivestockJob } from "../../datasources/NavJobDataSource.js";
 import {
   NavItemJournalTemplate,
   NavItemJournalBatch,
@@ -17,7 +18,12 @@ export const postWeanEntry = async (input: any, user: any) => {
   if (!standardJournal) {
     throw Error(`Event ${input.event} not found.`);
   }
-  const job = await livestockService.getJob(input.group);
+
+  const job = await getLivestockJob(input.group);
+  if (!job) {
+    throw Error(`Job ${input.group} not found.`);
+  }
+
 
   await postItemJournalLine({
     ...standardJournal,
