@@ -3,7 +3,6 @@ import {
   getLivestockJob,
 } from "../../datasources/NavJobDataSource.js";
 import { Job } from "../../payloads/Job.js";
-import { NavJob } from "../../types/nav.js";
 import { NavItemJournalTemplate } from "../../types/enum.js";
 import { movePostEntry } from "./LivestockMove.js";
 import { gradeOffPostEntry } from "./LivestockGradeOff.js";
@@ -17,9 +16,7 @@ import {
 import { mortalityPostEntry } from "./LivestockMortality.js";
 import { postShipmentEntry } from "./LivestockShipment.js";
 import { postPurchaseEntry } from "./LivestockPurchase.js";
-import { CodeDescription } from "../../payloads/CodeDescription.js";
 import { Event } from "../../payloads/Event.js";
-import { get } from "mongoose";
 import { getReasonCodeDescList } from "../../datasources/NavMiscDataSource.js";
 import { BaseJob } from "../../payloads/BaseJob.js";
 
@@ -41,7 +38,7 @@ const getJobDetails = async (jobNumber: string): Promise<Job | undefined> => {
 const getStandardJournalsByTemplate = async (
   template: string,
   job?: string
-): Promise<Event[] | Event> => {
+): Promise<Event[]> => {
   if (template === NavItemJournalTemplate.Mortality && job) {
     console.log("Fetching mortality journal for job:", job);
     const jobDetails = await getJobDetails(job);
@@ -60,20 +57,22 @@ const getStandardJournalsByTemplate = async (
     const lines = await getStandardJournalLines(template, journal.Code);
     const reasonCodes = lines.map((line) => line.Reason_Code);
     const reasons = await getReasonCodeDescList(reasonCodes);
-    return Event.create(journal, reasons);
+    return [Event.create(journal, reasons)];
   } else if (template === NavItemJournalTemplate.GradeOff) {
     const journals = await getStandardJournals(template);
-    const result = journals.map(async (journal) => {
-      const lines = await getStandardJournalLines(template, journal.Code);
-      const reasonCodes = lines.map((line) => line.Reason_Code);
-      const reasons = await getReasonCodeDescList(reasonCodes);
-      return Event.create(journal, reasons);
-    });
-    return Promise.all(result);
+    const result = await Promise.all(
+      journals.map(async (journal) => {
+        const lines = await getStandardJournalLines(template, journal.Code);
+        const reasonCodes = lines.map((line) => line.Reason_Code);
+        const reasons = await getReasonCodeDescList(reasonCodes);
+        return Event.create(journal, reasons);
+      })
+    );
+    return result;
   } else {
     const journals = await getStandardJournals(template);
     const result = journals.map((j) => Event.create(j));
-    return Promise.all(result);
+    return result;
   }
 };
 
