@@ -51,8 +51,8 @@ export class Job implements IJob {
     //   const groupStartDate = format(startDate, DATE_FORMAT);
     //   return groupStartDate;
     // })();
-    this.location = location
-    this.projectManager = projectManager
+    this.location = location;
+    this.projectManager = projectManager;
     this.status = data.Status;
     this.startQuantity = data.Start_Quantity;
     this.postingGroup = data.Job_Posting_Group;

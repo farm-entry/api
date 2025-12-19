@@ -8,10 +8,7 @@ export const getJobs = async (req: Request, res: Response) => {
   res.status(200).json(jobs);
 };
 
-export const getJob = async (
-  req: Request,
-  res: Response
-) => {
+export const getJob = async (req: Request, res: Response) => {
   const jobNumber = req.params.number;
   const job = await livestockService.getJobDetails(jobNumber);
   if (job) {
@@ -36,7 +33,9 @@ export const getStandardJournalsByTemplate = async (
   if (template === NavItemJournalTemplate.Mortality && !job) {
     return res
       .status(400)
-      .json({ message: "Job query parameter is required for Mortality template" });
+      .json({
+        message: "Job query parameter is required for Mortality template",
+      });
   }
   const journals = await livestockService.getStandardJournalsByTemplate(
     template,
@@ -64,4 +63,3 @@ export const getHealthStatuses = async (req: Request, res: Response) => {
   const healthStatuses = await getAllHealthStatuses();
   res.status(200).json(healthStatuses);
 };
-
