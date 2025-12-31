@@ -39,7 +39,9 @@ export const getStandardJournalsByTemplate = async (
     template,
     job
   );
-  res.status(200).json(journals);
+  const healthStatuses = await livestockService.getHealthStatuses();
+  const response = { journals, healthStatuses };
+  res.status(200).json(response);
 };
 
 export const postEntry = async (req: Request, res: Response) => {
@@ -47,9 +49,4 @@ export const postEntry = async (req: Request, res: Response) => {
   const user = req.authenticatedUser!.username;
   await livestockService.postEntry(input, user);
   res.status(201).json({ message: "Entry posted successfully" });
-};
-
-export const getHealthStatuses = async (req: Request, res: Response) => {
-  const healthStatuses = await getAllHealthStatuses();
-  res.status(200).json(healthStatuses);
 };

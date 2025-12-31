@@ -45,7 +45,7 @@ export const postWeanEntry = async (
       : job?.Location_Code,
     Quantity: input.quantity,
     Weight: input.totalWeight,
-    Posting_Date: input.postingDate, // strip out timestamp if present
+    Posting_Date: input.postingDate,
     Job_No: input.group,
     Meta: input.smallLivestockQuantity,
   });

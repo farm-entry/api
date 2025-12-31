@@ -17,8 +17,14 @@ import { mortalityPostEntry } from "./LivestockMortality.js";
 import { postShipmentEntry } from "./LivestockShipment.js";
 import { postPurchaseEntry } from "./LivestockPurchase.js";
 import { Event } from "../../payloads/Event.js";
-import { getReasonCodeDescList } from "../../datasources/NavMiscDataSource.js";
+import {
+  getAllHealthStatuses,
+  getHealthStatus,
+  getReasonCodeDescList,
+} from "../../datasources/NavMiscDataSource.js";
 import { BaseJob } from "../../payloads/BaseJob.js";
+import { CodeDescription } from "../../payloads/CodeDescription.js";
+import { withCache, CACHE_TTL } from "../../config/cache.js";
 
 const getJobs: () => Promise<BaseJob[]> = async () => {
   const navJobs = await getLivestockJobs();
@@ -96,7 +102,23 @@ const postEntry = async (input: any, username: string) => {
   }
 };
 
+const getHealthStatuses = async (): Promise<CodeDescription[]> => {
+  return withCache(
+    "health-statuses",
+    async () => {
+      const statuses = await getAllHealthStatuses();
+      return Promise.all(
+        statuses.map((status) => {
+          return CodeDescription.fromGeneric(status);
+        })
+      );
+    },
+    CACHE_TTL.DAY
+  );
+};
+
 const livestockService = {
+  getHealthStatuses,
   getJobs,
   getJobDetails,
   getStandardJournalsByTemplate,

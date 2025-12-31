@@ -11,10 +11,12 @@ export const getAllHealthStatuses = async (): Promise<NavHealthStatus[]> => {
   return await navGet("/HealthStatus");
 };
 
-export const getReasonCodeDescList = async (codes: string[]): Promise<NavReason[]> => {
+export const getReasonCodeDescList = async (
+  codes: string[]
+): Promise<NavReason[]> => {
   return await navGet(
-    `/ReasonCodes?$filter=${buildFilter(f =>
-      f.or(...codes.map(code => f.equals("Code", code)))
+    `/ReasonCodes?$filter=${buildFilter((f) =>
+      f.or(...codes.map((code) => f.equals("Code", code)))
     )}`
   );
-}
+};
