@@ -46,7 +46,6 @@ const getStandardJournalsByTemplate = async (
   job?: string
 ): Promise<Event[] | Event> => {
   if (template === NavItemJournalTemplate.Mortality && job) {
-    console.log("Fetching mortality journal for job:", job);
     const jobDetails = await getJobDetails(job);
     if (!jobDetails) {
       throw Error(`Job ${job} not found.`);

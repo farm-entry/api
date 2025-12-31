@@ -24,7 +24,6 @@ export const getStandardJournalsByTemplate = async (
 ) => {
   const template = req.query.template as string;
   const job = req.query.job as string;
-  console.log("Received request with template:", template, "and job:", job);
   if (!template) {
     return res
       .status(400)
