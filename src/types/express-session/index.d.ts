@@ -1,15 +1,24 @@
 import "express-session";
-import { NavConfig } from "../../datasources/NavConfig.ts";
+import { NavConfig } from "../../datasources/NavConfig.js";
+
+export interface AuthenticatedUser {
+  id: string;
+  username: string;
+  name?: string;
+  loginTime: Date;
+}
 
 declare module "express-session" {
   interface SessionData {
-    //TODO - create types for user
-    user?: {
-      id?: string;
-      username?: string;
-      name?: string;
-      loginTime?: Date;
-    };
+    authenticatedUser?: AuthenticatedUser;
     navConfig?: NavConfig;
+  }
+}
+
+declare global {
+  namespace Express {
+    interface Request {
+      authenticatedUser?: AuthenticatedUser;
+    }
   }
 }

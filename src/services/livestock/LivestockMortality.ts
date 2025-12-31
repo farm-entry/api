@@ -11,7 +11,24 @@ import livestockService from "./LivestockService.js";
 import { getResourceByCode } from "../../datasources/NavResourceDataSource.js";
 import { getLivestockJob } from "../../datasources/NavJobDataSource.js";
 
-export const mortalityPostEntry = async (input: any, user: any) => {
+interface MortalityQuantityEntry {
+  code: string;
+  quantity: number;
+}
+
+interface MortalityPostInput {
+  event: string;
+  job: string;
+  group: string;
+  comments: string;
+  postingDate: string;
+  quantities: MortalityQuantityEntry[];
+}
+
+export const mortalityPostEntry = async (
+  input: MortalityPostInput,
+  username: string
+) => {
   const standardJournalLines = await getStandardJournalLines(
     input.event,
     NavItemJournalTemplate.Mortality
@@ -42,7 +59,7 @@ export const mortalityPostEntry = async (input: any, user: any) => {
       await postItemJournalLine({
         ...line,
         Journal_Batch_Name: NavItemJournalBatch.FarmApp,
-        Document_No: getDocumentNumber("MORT", user.name),
+        Document_No: getDocumentNumber("MORT", username),
         Description: input.comments,
         Location_Code: job.Location_Code
           ? job.Location_Code

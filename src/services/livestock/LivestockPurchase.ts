@@ -10,7 +10,21 @@ import {
 import { getDocumentNumber } from "../../utils/util.js";
 import livestockService from "./LivestockService.js";
 
-export const postPurchaseEntry = async (input: any, user: any) => {
+interface PostPurchaseEntryInput {
+  event: string;
+  job: string;
+  group: string;
+  comments?: string;
+  quantity: number;
+  totalWeight: number;
+  postingDate: string;
+  smallLivestockQuantity?: number;
+}
+
+export const postPurchaseEntry = async (
+  input: PostPurchaseEntryInput,
+  username: string
+) => {
   const [standardJournalLines] = await getStandardJournalLines(
     input.event,
     NavItemJournalTemplate.Purchase
@@ -28,7 +42,7 @@ export const postPurchaseEntry = async (input: any, user: any) => {
   await postItemJournalLine({
     ...standardJournalLines,
     Journal_Batch_Name: NavItemJournalBatch.FarmApp,
-    Document_No: getDocumentNumber("PURCH", user.name),
+    Document_No: getDocumentNumber("PURCH", username),
     Description: input.comments || " ",
     Location_Code: standardJournalLines.Location_Code
       ? standardJournalLines.Location_Code

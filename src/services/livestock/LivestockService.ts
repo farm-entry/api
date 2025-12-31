@@ -3,7 +3,6 @@ import {
   getLivestockJob,
 } from "../../datasources/NavJobDataSource.js";
 import { Job } from "../../payloads/Job.js";
-import { NavJob } from "../../types/nav.js";
 import { NavItemJournalTemplate } from "../../types/enum.js";
 import { movePostEntry } from "./LivestockMove.js";
 import { gradeOffPostEntry } from "./LivestockGradeOff.js";
@@ -17,9 +16,7 @@ import {
 import { mortalityPostEntry } from "./LivestockMortality.js";
 import { postShipmentEntry } from "./LivestockShipment.js";
 import { postPurchaseEntry } from "./LivestockPurchase.js";
-import { CodeDescription } from "../../payloads/CodeDescription.js";
 import { Event } from "../../payloads/Event.js";
-import { get } from "mongoose";
 import { getReasonCodeDescList } from "../../datasources/NavMiscDataSource.js";
 import { BaseJob } from "../../payloads/BaseJob.js";
 
@@ -77,23 +74,23 @@ const getStandardJournalsByTemplate = async (
   }
 };
 
-const postEntry = async (input: any, user: any) => {
+const postEntry = async (input: any, username: string) => {
   const formType = input.form.toUpperCase() as NavItemJournalTemplate;
   switch (formType) {
     case NavItemJournalTemplate.Adjustment:
-      return await postAdjustmentEntry(input, user);
+      return await postAdjustmentEntry(input, username);
     case NavItemJournalTemplate.GradeOff:
-      return await gradeOffPostEntry(input, user);
+      return await gradeOffPostEntry(input, username);
     case NavItemJournalTemplate.Mortality:
-      return await mortalityPostEntry(input, user);
+      return await mortalityPostEntry(input, username);
     case NavItemJournalTemplate.Move:
-      return await movePostEntry(input, user);
+      return await movePostEntry(input, username);
     case NavItemJournalTemplate.Purchase:
-      return await postPurchaseEntry(input, user);
+      return await postPurchaseEntry(input, username);
     case NavItemJournalTemplate.Shipment:
-      return await postShipmentEntry(input, user);
+      return await postShipmentEntry(input, username);
     case NavItemJournalTemplate.Wean:
-      return await postWeanEntry(input, user);
+      return await postWeanEntry(input, username);
     default:
       throw Error(`Event type ${input.eventType} not supported.`);
   }

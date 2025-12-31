@@ -31,11 +31,9 @@ export const getStandardJournalsByTemplate = async (
       .json({ message: "Template query parameter is required" });
   }
   if (template === NavItemJournalTemplate.Mortality && !job) {
-    return res
-      .status(400)
-      .json({
-        message: "Job query parameter is required for Mortality template",
-      });
+    return res.status(400).json({
+      message: "Job query parameter is required for Mortality template",
+    });
   }
   const journals = await livestockService.getStandardJournalsByTemplate(
     template,
@@ -44,19 +42,11 @@ export const getStandardJournalsByTemplate = async (
   res.status(200).json(journals);
 };
 
-export const postEntry = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const input = req.body;
-    const user = req.session.user;
-    await livestockService.postEntry(input, user);
-    res.status(201).json({ message: "Entry posted successfully" });
-  } catch (error: any) {
-    next(error);
-  }
+export const postEntry = async (req: Request, res: Response) => {
+  const input = req.body;
+  const user = req.authenticatedUser!.username;
+  await livestockService.postEntry(input, user);
+  res.status(201).json({ message: "Entry posted successfully" });
 };
 
 export const getHealthStatuses = async (req: Request, res: Response) => {

@@ -10,7 +10,20 @@ import {
 } from "../../types/enum.js";
 import { getDocumentNumber } from "../../utils/util.js";
 
-export const postAdjustmentEntry = async (input: any, user: any) => {
+interface AdjustmentEntryInput {
+  job: string;
+  group: string;
+  event: string;
+  quantity: number;
+  totalWeight: number;
+  postingDate: string;
+  comments?: string;
+}
+
+export const postAdjustmentEntry = async (
+  input: AdjustmentEntryInput,
+  username: string
+) => {
   const job = await getLivestockJob(input.job);
   if (!job) {
     throw Error(`Job ${input.group} not found.`);
@@ -29,7 +42,7 @@ export const postAdjustmentEntry = async (input: any, user: any) => {
     Journal_Batch_Name: NavItemJournalBatch.FarmApp,
     Entry_Type:
       input.quantity >= 0 ? NavEntryType.Positive : NavEntryType.Negative,
-    Document_No: getDocumentNumber("ADJ", user.name),
+    Document_No: getDocumentNumber("ADJ", username),
     Description: input.comments,
     Location_Code: standardJournal.Location_Code
       ? standardJournal.Location_Code

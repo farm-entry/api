@@ -32,7 +32,7 @@ authRoutes.post("/login", async (req, res) => {
       });
     } else {
       const user = userData.value[0];
-      req.session.user = {
+      req.session.authenticatedUser = {
         id: user.Id,
         username: user.User_Name,
         name: user.Full_Name,
@@ -54,13 +54,13 @@ authRoutes.post("/login", async (req, res) => {
     }
     res.json({
       message: "Login successful",
-      user: req.session.user,
+      user: req.session.authenticatedUser,
       sessionID: req.sessionID,
       debug: {
-        cookieName: req.sessionStore ? 'connect.sid' : 'unknown',
+        cookieName: req.sessionStore ? "connect.sid" : "unknown",
         sessionExists: !!req.session,
-        userExists: !!req.session.user
-      }
+        userExists: !!req.session.authenticatedUser,
+      },
     });
   } else {
     res.status(400).json({
@@ -81,10 +81,10 @@ authRoutes.post("/logout", (req, res) => {
 });
 
 authRoutes.get("/session", (req, res) => {
-  if (req.session.user) {
+  if (req.session.authenticatedUser) {
     res.json({
       authenticated: true,
-      user: req.session.user,
+      user: req.session.authenticatedUser,
       sessionID: req.sessionID,
     });
   } else {

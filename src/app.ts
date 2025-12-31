@@ -35,8 +35,16 @@ app.get("/api-docs.json", (req, res) => {
 
 const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
   if (req.hostname === "localhost" || req.hostname === "127.0.0.1") {
+    // For localhost, create a mock authenticated user in session
+    req.session.authenticatedUser = {
+      id: "dev-user",
+      username: "dev",
+      name: "Development User",
+      loginTime: new Date(),
+    };
+    req.authenticatedUser = req.session.authenticatedUser;
     next();
-  } else if (req.session && req.session.user) {
+  } else if (req.session && req.session.authenticatedUser) {
     next();
   } else {
     res.status(401).json({
@@ -61,7 +69,7 @@ app.get("/debug/session", (req, res) => {
   res.json({
     sessionID: req.sessionID,
     hasSession: !!req.session,
-    hasUser: !!(req.session && req.session.user),
+    hasUser: !!(req.session && req.session.authenticatedUser),
     isProduction: process.env.NODE_ENV === "production",
     isHeroku: !!process.env.DYNO,
     trustProxy: app.get("trust proxy"),

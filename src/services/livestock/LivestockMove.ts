@@ -13,7 +13,22 @@ import { NavItemJournalLine } from "../../types/nav.js";
 import { getDocumentNumber } from "../../utils/util.js";
 import livestockService from "./LivestockService.js";
 
-export const movePostEntry = async (input: any, user: any) => {
+interface MovePostEntryInput {
+  form: string;
+  event: string;
+  fromJob: string;
+  toJob: string;
+  quantity: number;
+  totalWeight: number;
+  postingDate: string;
+  comments?: string;
+  smallLivestockQuantity?: number;
+}
+
+export const movePostEntry = async (
+  input: MovePostEntryInput,
+  username: string
+) => {
   const formType = input.form.toUpperCase() as NavItemJournalTemplate;
   const standardJournal = await getStandardJournalLines(formType, input.event);
 
@@ -29,7 +44,7 @@ export const movePostEntry = async (input: any, user: any) => {
     throw Error(`Event ${input.event} not found.`);
   }
 
-  const docNo = getDocumentNumber("MOVE", user.name);
+  const docNo = getDocumentNumber("MOVE", username);
   const fromJob = await getLivestockJob(input.fromJob);
   const toJob = await getLivestockJob(input.toJob);
 

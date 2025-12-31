@@ -1,18 +1,4 @@
-import { getLocationByCode } from "../datasources/NavLocationDataSource.js";
-import { getResourceByCode } from "../datasources/NavResourceDataSource.js";
-import {
-  NavHealthStatus,
-  NavJob,
-  NavLocation,
-  NavResource,
-  NavUser,
-} from "../types/nav.js";
-import { IJob } from "../types/payload.js";
-import { getNavUserByName } from "../datasources/NavUserDataSource.js";
-import { getHealthStatus } from "../datasources/NavMiscDataSource.js";
-
-const DATE_FORMAT = "yyyy-MM-dd";
-
+import { NavJob } from "../types/nav.js";
 export class BaseJob {
   number: string;
   description: string;

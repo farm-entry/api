@@ -9,7 +9,21 @@ import {
 } from "../../types/enum.js";
 import { getDocumentNumber } from "../../utils/util.js";
 
-export const postShipmentEntry = async (input: any, user: any) => {
+interface ShipmentEntryInput {
+  event: string;
+  group: string;
+  comments?: string;
+  dimensionPacker: string;
+  quantity: number;
+  totalWeight: number;
+  postingDate: string;
+  deadsOnArrivalQuantity?: number;
+}
+
+export const postShipmentEntry = async (
+  input: ShipmentEntryInput,
+  username: string
+) => {
   const [standardJournal] = await getStandardJournalLines(
     NavItemJournalTemplate.Shipment,
     input.event
@@ -27,7 +41,7 @@ export const postShipmentEntry = async (input: any, user: any) => {
   await postItemJournalLine({
     ...standardJournal,
     Journal_Batch_Name: NavItemJournalBatch.FarmApp,
-    Document_No: getDocumentNumber(NavItemJournalTemplate.Shipment, user.name),
+    Document_No: getDocumentNumber(NavItemJournalTemplate.Shipment, username),
     Description: input.comments,
     ShortcutDimCode_x005B_5_x005D_: input.dimensionPacker,
     Location_Code: standardJournal.Location_Code
@@ -36,7 +50,7 @@ export const postShipmentEntry = async (input: any, user: any) => {
     Quantity: input.quantity,
     Weight: input.totalWeight,
     Posting_Date: input.postingDate,
-    Job_No: input.job,
+    Job_No: input.group,
     Meta: input.deadsOnArrivalQuantity,
   });
 };

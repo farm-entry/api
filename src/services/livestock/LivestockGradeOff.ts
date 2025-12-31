@@ -6,9 +6,24 @@ import { getLivestockJob } from "../../datasources/NavJobDataSource.js";
 import { NavItemJournalTemplate } from "../../types/enum.js";
 import { NavItemJournalBatch } from "../../types/enum.js";
 import { getDocumentNumber } from "../../utils/util.js";
-import livestockService from "./LivestockService.js";
 
-export const gradeOffPostEntry = async (input: any, user: any) => {
+interface GradeOffInput {
+  event: string;
+  job: string;
+  group: string;
+  comments?: string;
+  livestockWeight: number;
+  postingDate: string;
+  quantities: {
+    code: string;
+    quantity: number;
+  }[];
+}
+
+export const gradeOffPostEntry = async (
+  input: GradeOffInput,
+  username: string
+) => {
   const standardJournalLines = await getStandardJournalLines(
     input.event,
     NavItemJournalTemplate.GradeOff
@@ -31,7 +46,7 @@ export const gradeOffPostEntry = async (input: any, user: any) => {
       await postItemJournalLine({
         ...line,
         Journal_Batch_Name: NavItemJournalBatch.FarmApp,
-        Document_No: getDocumentNumber("GRDOFF", user.name),
+        Document_No: getDocumentNumber("GRDOFF", username),
         Description: input.comments,
         Location_Code: line.Location_Code
           ? line.Location_Code
